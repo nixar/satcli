@@ -1,0 +1,6 @@
+satcli
+satcli.bootstrap
+satcli.controllers
+satcli.model
+satcli.helpers
+satcli.templates

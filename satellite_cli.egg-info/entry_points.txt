@@ -1,0 +1,4 @@
+
+    [console_scripts]
+    satellite-cli = satcli.appmain:main
+    

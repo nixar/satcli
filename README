@@ -1,0 +1,58 @@
+NAME: satcli
+
+AUTHOR:
+
+DESCRIPTION:
+
+Describe your application here.
+
+satellite-cli is built on the Cement CLI Application Framework.
+
+
+USAGE:
+
+    $ satcli --help
+    
+    
+PLUGIN DEVELOPMENT:
+
+satellite-cli supports external plugins via the Cement Framework.  To quick
+start a new plugin for satcli you can use the paster utility.
+
+Setup a virtual environment for development:
+    
+    $ virtualenv --no-site-package /path/to/env
+    
+    $ source /path/to/env/bin/activate
+    
+    
+Install satellite-cli:
+    
+    $ cd /path/to/satellite-cli
+    
+    $ python setup.py develop
+    
+
+Create and install the plugin:
+
+    $ mkdir plugins
+    
+    $ cd plugins
+    
+    $ paster cement-plugin satcli myplugin
+    
+    $ cd satcli-plugins-myplugin
+    
+    $ python setup.py develop
+    
+    
+Once your plugin is installed, you can add the plugin to the enabled_plugins
+setting in /etc/satcli/satcli.conf (or the path to the config).  
+Additionally, the plugin configurations can be set in 
+/etc/satcli/plugins.d/myplugin.conf. You should then see some example 
+commands/options show up with:
+
+    $ satcli --help
+    
+    
+Then, code away!
