@@ -1,14 +1,14 @@
 from setuptools import setup, find_packages
 import sys, os
 
-setup(name='satellite-cli',
+setup(name='satcli',
     version='0.1',
     description='Command Line Interface to RHN Satellite Server',
     classifiers=[], 
     keywords='',
     author='BJ Dierkes',
     author_email='wdierkes@rackspace.com',
-    url='',
+    url='http://github.com/derks/satcli',
     license='GPL v2',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     include_package_data=True,
@@ -25,7 +25,7 @@ setup(name='satellite-cli',
     test_suite='nose.collector',
     entry_points="""
     [console_scripts]
-    satellite-cli = satcli.appmain:main
+    satcli = satcli.appmain:main
     """,
     namespace_packages=[
         'satcli', 

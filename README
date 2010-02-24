@@ -4,9 +4,8 @@ AUTHOR:
 
 DESCRIPTION:
 
-Describe your application here.
-
-satellite-cli is built on the Cement CLI Application Framework.
+satcli is a command line interface to the Red Hat Network Satellite 
+Server API, and is built on the Cement CLI Application Framework.
 
 
 USAGE:
@@ -16,8 +15,8 @@ USAGE:
     
 PLUGIN DEVELOPMENT:
 
-satellite-cli supports external plugins via the Cement Framework.  To quick
-start a new plugin for satcli you can use the paster utility.
+satcli supports external plugins via the Cement Framework.  To quick
+start a new plugin for this application you can use the paster utility.
 
 Setup a virtual environment for development:
     
@@ -26,9 +25,9 @@ Setup a virtual environment for development:
     $ source /path/to/env/bin/activate
     
     
-Install satellite-cli:
+Install satcli:
     
-    $ cd /path/to/satellite-cli
+    $ cd /path/to/satcli
     
     $ python setup.py develop
     
