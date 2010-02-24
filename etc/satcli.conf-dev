@@ -4,26 +4,25 @@
 # options you like.  Only thing you have to have is the the above [root] 
 # which ties this config to your 'root' namespace.
 
-# PLUGINS
-#
-# Plugins are generally enabled under their [plugin] config either in this
-# file or in the plugins.d config file for that plugin.  To enable a plugin
-# set 'enable_plugin = true' under the plugins configuration.  
-#
-# Alternatively, a list of plugin names can be set under the root namespace.  
-# These can be plugins from within your application, or shared plugin from 
-# another application such as The Rosendale Project.
-#
-# enabled_plugins = example, rosendale.plugins.clibasic
-#
+# ROOT APPLICATION SETTINGS
+
+# RHN SETTINGS
+user =
+password =
+server = rhn.example.com
+port = 443
+use_ssl = true
+
 
 # DIRECTORIES
 #
-# These settings tend to follow the FHS, and may need to be modified for your
-# environment.
-datadir = /var/lib/satellite-cli
-tmpdir = /tmp
-plugin_config_dir = /etc/satellite-cli/plugins.d
+# these should probably be changed for production installations if you 
+# follow the FHS (and you should).
+datadir = ~/satcli/data
+tmpdir = ~/satcli/tmp
+
+# This should be the path to your development tree ... /path/etc/plugins.d
+plugin_config_dir = /path/to/satcli/etc/plugins.d
 
 
 # This is just a cosmetic option... whether to show 'loading plugin...'
@@ -34,7 +33,7 @@ plugin_config_dir = /etc/satellite-cli/plugins.d
 # LOGGING
 #
 # Log file path, comment out if no log is required.
-log_file = /var/log/satellite-cli/satellite-cli.log
+log_file = ~/satcli/log/satcli.log
 
 # Toggle debug output... can be true, false
 debug = false 
@@ -52,11 +51,20 @@ log_to_console = true
 #log_max_bytes = 512000000 
 #log_max_files = 4
 
-# ROOT APPLICATION SETTINGS
+# PLUGINS
 #
-# Add any config options you'd like here
+# Plugins are enabled under their [plugin] config either in this
+# file or in the plugins.d config file for that plugin.  An example plugin
+# config looks like:
 #
-# myoption = this is my option
+#   [example]
+#   enable_plugin = true
+#   provider = rosendale
+#
+#
+# The 'provider' is the package that provides it.  If it is an internal plugin
+# this can be left blank.
+#
 
 # [namespace]
 # Additional namespace/plugin configurations can go here.

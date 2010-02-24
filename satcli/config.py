@@ -17,8 +17,8 @@ prefix = os.path.join(os.environ['HOME'], '.satcli')
     
 dcf = ConfigObj() # default config
 dcf['config_source'] = ['defaults']
-dcf['app_name'] = 'satellite-cli' # name for cli like /etc/<app_name>
-dcf['app_egg_name'] = 'satellite_cli' # name from setup.py
+dcf['app_name'] = 'satcli' # name for cli like /etc/<app_name>
+dcf['app_egg_name'] = 'satcli' # name from setup.py
 dcf['app_module'] = 'satcli' # name of the library dir
 dcf['app_basepath'] = os.path.dirname(__file__)
 

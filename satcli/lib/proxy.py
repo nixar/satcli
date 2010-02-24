@@ -11,7 +11,7 @@ from satcli.appmain import KNOWN_COMPAT
  
 log = get_logger(__name__)
  
-class SatelliteProxy(object):
+class RHNSatelliteProxy(object):
     def __init__(self):
         self.token = None
         self.server = 'rhn.example.com'

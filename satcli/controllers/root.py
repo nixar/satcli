@@ -1,5 +1,5 @@
 """
-This is the RootController for the satellite-cli application.  This can be used
+This is the RootController for the satcli application.  This can be used
 to expose commands to the root namespace which will be accessible under:
 
     $ satcli --help
@@ -11,6 +11,9 @@ from cement.core.exc import CementArgumentError
 from cement.core.controller import CementController, expose
 from cement.core.namespace import get_config
 from cement.core.log import get_logger
+
+from satcli import user_cache
+from satcli.lib.proxy import RHNSatelliteProxy
 
 log = get_logger(__name__)
 config = get_config()
@@ -36,34 +39,39 @@ class RootController(CementController):
         """
         raise CementArgumentError, "A command is required. See --help?"
     
-    @expose('satcli.templates.root.cmd1')
-    def cmd1(self, cli_opts, cli_args):
-        """This is an example 'root' command.  It should be replaced."""
-        foo = 'In satcli.controllers.root.cmd1()'
-        if cli_opts.debug:
-            print 'The --debug option was passed'
+    @expose()
+    def freeform(self, cli_opts, cli_args):
+        """
+        Takes an API path (i.e. auth.login) and args (i.e username) and
+        attempts to make a call to the RHN Proxy.  Useful for development.
+        """
+        cmd = cli_args.pop(0)
+        path = cli_args.pop(0)
+        args = cli_args
+ 
+        proxy = RHNSatelliteProxy()
         
-        items = ['one', 'two', 'three']
-        return dict(foo=foo, items=items)
+        if cli_opts.user:
+            proxy.get_session(use_cache=False)
+        else:
+            proxy.get_session()    
+            
+        try:
+            res = proxy.call(path, *args)
+        except xmlrpclib.Fault, e:
+            res = proxy.noauth_call(path, *args)
+        
+        print
+        print "Freeform API Call Output"
+        print "-" * 77
+        print res
+        print
     
     @expose()
-    def cmd1_help(self, cli_opts, cli_args):
-        """This is an example 'root' -help command.  It should be replaced."""
-        foo = 'In satcli.controllers.root.cmd1_help()'
-        return dict(foo=foo)
-    
-    @expose('satcli.templates.root.get-started')
-    def get_started(self, cli_opts, cli_args):
-        features = [
-            'Multiple Configuration file parsing (default: /etc, ~/)',
-            'Command line argument and option parsing',
-            'Dual Console/File Logging Support',
-            'Full Internal and External (3rd Party) Plugin support',
-            'Basic "hook" support',
-            'Full MVC support for advanced application design',
-            'Text output rendering with Genshi templates',
-            'Json output rendering allows other programs to access your CLI-API',
-            ]
-        
-        genshi_link = "http://genshi.edgewall.org/wiki/Documentation/text-templates.html"
-        return dict(config=config, features=features, genshi_link=genshi_link)
+    def freeform_help(self, cli_opts, cli_args):
+        print
+        print "Attempt to make an API call to the RHN Proxy:"
+        print
+        print "$ satcli freeform 'user.getLoggedInTime' 'johndoe'"
+        print
+ 

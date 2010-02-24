@@ -1,5 +1,5 @@
 """
-This is the ExampleController for the satellite-cli application.  This can be used
+This is the ExampleController for the satcli application.  This can be used
 to expose commands to the example namespace which will be accessible under:
 
     $ satcli example --help
@@ -36,7 +36,7 @@ class ExampleController(CementController):
         # does not render out to a template.
         
         # Commands are all passed the cli_opts, cli_args from the command line.
-        # So if you have added cli options in your satellite-cli.bootstrap.example
+        # So if you have added cli options in your satcli.bootstrap.example
         # file, you could access them here as:
         #
         #   cli_opts.<your_option>

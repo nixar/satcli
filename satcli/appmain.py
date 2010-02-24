@@ -18,10 +18,19 @@ from cement.core.command import run_command
 from satcli.config import default_config
 
 REQUIRED_CEMENT_API = '0.7-0.8:20100210'
-VERSION = get_distribution('satellite-cli').version
+KNOWN_COMPAT = ['10.8']
+
+VERSION = get_distribution('satcli').version
 BANNER = """
-satellite-cli version %s, built on Cement (api:%s)
-""" % (VERSION, REQUIRED_CEMENT_API)
+satcli v%s - Command Line Interface for the RHN Satellite Server
+Copyright (C) 2010 BJ Dierkes <wdierkes@rackspace.com>
+Distributed under the GNU General Public License v2
+ 
+This version is known to be compatible with the following Satellite Server 
+API Versions:
+ 
+%s
+""" % (VERSION, KNOWN_COMPAT)
 
 def main():
     try:

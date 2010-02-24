@@ -6,6 +6,7 @@ already bootstrapped by Cement, however you can extend that functionality
 by importing additional bootstrap files here.
 """
 
+from cement.core.exc import CementConfigError
 from cement.core.opt import init_parser
 from cement.core.hook import register_hook
 
@@ -25,6 +26,38 @@ def options_hook(*args, **kwargs):
         dest='quiet', default=None, help='disable console logging')
     return ('root', root_options)
 
+@register_hook()
+def validate_config_hook(*args, **kwargs):
+    config = kwargs.get('config', None)
+    if not config:
+        print("WARNING: broken hook.  missing 'config' keyword argument.")
+    else:
+        required_settings = ['user', 'password', 'server', 'port', 'use_ssl']
+        for s in required_settings:
+            if not config.has_key(s):
+                raise CementConfigError, "config['%s'] value missing!" % s
+            
+@register_hook()
+def options_hook(*args, **kwargs):
+    """
+    Pass back an OptParse object, options will be merged into the global
+    options.
+    """
+    global_options = init_parser()
+    global_options.add_option('--user', action ='store', 
+        dest='user', default=None, help='RHN user name'
+        ) 
+    global_options.add_option('--pass', action='store', 
+        dest='password', default=None, help='RHN user password'
+        ) 
+    global_options.add_option('--server', action ='store', 
+        dest='server', default=None, help='RHN server hostname'
+        ) 
+    global_options.add_option('--port', action ='store', 
+        dest='port', default=None, help='RHN server port'
+        )    
+    return ('root', global_options)
+    
 # Import all additional (non-plugin) bootstrap libraries here    
 # 
 #   from satcli.bootstrap import example
