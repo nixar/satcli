@@ -1,0 +1,16 @@
+
+Help info for the 'list-packages' command
+------------------------------------------------------------------------------
+
+The 'channel list-packages' command is used to list package information via 
+the ChannelSoftwareHandler.  It will call 'listLatestPackages' by default, but 
+can be altered via the '--all' option to show all:
+
+Examples:
+
+    $ satcli channel list-packages
+    
+    $ satcli channel list-packages --all
+    
+    
+    

@@ -32,6 +32,12 @@ dcf['plugin_config_dir'] = '%s/etc/plugins.d' % prefix
 dcf['log_to_console'] = True
 dcf['output_engine'] = 'genshi'
 
+dcf['user'] = ''
+dcf['password'] = ''
+dcf['server'] = 'rhn.example.com'
+dcf['port'] = 443
+dcf['use_ssl'] = True
+
 # By default look in /etc and ~/ for config files.  You should probably
 # symlink /etc/<your_app> => ./etc/<your_app> for easy development.
 dcf['config_files'] = [

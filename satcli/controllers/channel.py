@@ -72,3 +72,6 @@ class ChannelController(CementController):
         packages = self.proxy.call(call_path, self.cli_opts.label)
         return dict(packages=packages)
     
+    @expose('satcli.templates.channel.list-packages-help', namespace='channel')
+    def list_packages_help(self, *args, **kw):
+        return dict()

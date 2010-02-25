@@ -2,7 +2,7 @@ import sys, os
 from pkg_resources import get_distribution
 import xmlrpclib
  
-from cement import namespaces
+from cement.core.namespace import get_config
 from cement.core.log import get_logger
 from rosendale.helpers.cache.simple_cache import SimpleCache
  
@@ -10,19 +10,38 @@ from satcli import user_cache
 from satcli.appmain import KNOWN_COMPAT
  
 log = get_logger(__name__)
- 
+        
 class RHNSatelliteProxy(object):
     def __init__(self):
         self.token = None
-        self.server = 'rhn.example.com'
-        self.port = '443'
-        self.use_ssl = True
         self.session = None
-        self.config = {}
-        self.config = namespaces['root'].config
         self.user = None
- 
+        self.config = get_config()
+        log.debug('initializing RHNSatelliteProxy()')
+    
+    def get_user_pass(self):
+        password = ''
         
+        if self.config.has_key('user'):
+            self.user = self.config['user']
+        else:
+            self.user = raw_input('%s username: ' % \
+                        self.config['server_type'].capitalize())
+                
+        if self.config.has_key('password') and self.config['password']:
+            password = self.config['password']
+        else:
+            try:
+                os.system('stty -echo')
+                password = raw_input('%s Password for %s: ' % \
+                    (self.config['server_type'].capitalize(), self.user))
+                os.system('stty echo')
+                print
+            except:
+                os.system('stty echo')
+                print     
+        return (self.user, password)
+                  
     def get_session(self, use_cache=True, user=None, password=None):
         """
         Get a session with the server.
@@ -42,6 +61,7 @@ class RHNSatelliteProxy(object):
                 RHN Password
         
         """
+        log.debug('attempting to get rhn session')
         global user_cache
         if self.config['use_ssl']:
             uri = "https://%s:%s/rpc/api" % (self.config['server'], 
@@ -77,29 +97,13 @@ class RHNSatelliteProxy(object):
                 user_cache.drop('rhn_session_key')
   
         else:
-            if self.config.has_key('user'):
-                self.user = self.config['user']
-            else:
-                self.user = raw_input('%s username: ' % \
-                            self.config['server_type'].capitalize())
-                    
-            if self.config.has_key('password') and self.config['password']:
-                password = self.config['password']
-            else:
-                try:
-                    os.system('stty -echo')
-                    password = raw_input('%s Password for %s: ' % \
-                        (self.config['server_type'].capitalize(), self.user))
-                    os.system('stty echo')
-                    print
-                except:
-                    os.system('stty echo')
-                    print            
+            (self.user, password) = self.get_user_pass()
         
         # If the token wasn't cached        
         if not self.token:
             # get the session token
             try:
+                (self.user, password) = self.get_user_pass()
                 self.token = self.session.auth.login(self.user, password)
             except xmlrpclib.Fault, e:
                 print "xmlrpclib.Fault => %s" % e
@@ -114,6 +118,7 @@ class RHNSatelliteProxy(object):
             sys.exit(1)
     
     def verify_compatibility(self):
+        log.debug('verifying rhn api compatibility')
         res = self.session.api.getVersion()
         if res not in KNOWN_COMPAT:
             log.warn(
@@ -122,10 +127,12 @@ class RHNSatelliteProxy(object):
                 )
         
     def call(self, path, *args, **kwargs):
+        log.debug('making call to rhn: self.session.%s(self.token, %s)' % (path, [str(x) for x in args]))
         res = eval("self.session.%s(self.token, *args)" % path)
         return res
  
     def noauth_call(self, path, *args, **kwargs):
+        log.debug('making call to rhn: self.session.%s(%s)' % (path, [str(x) for x in args]))
         res = eval("self.session.%s(*args)" % path)
         return res
         
