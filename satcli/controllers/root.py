@@ -9,6 +9,7 @@ to expose commands to the root namespace which will be accessible under:
 from cement import namespaces
 from cement.core.exc import CementArgumentError
 from cement.core.controller import CementController, expose
+from cement.core.view import render
 from cement.core.namespace import get_config
 from cement.core.log import get_logger
 
@@ -20,17 +21,17 @@ config = get_config()
 
 class RootController(CementController):
     @expose('satcli.templates.root.error', is_hidden=True)
-    def error(self, *args, **kw):
+    def error(self, errors={}, *args, **kw):
         """
         This can be called when catching exceptions.  It expects an 
         'errors' dictionary to be passed via **kwargs.
         
         """
-        if kw.get('errors', None):
-            return dict(errors=kw['errors'])
+        if errors:
+            return dict(errors=errors)
     
     @expose(is_hidden=True)
-    def default(self, cli_opts, cli_args):
+    def default(self, *args, **kw):
         """
         This is the default command method.  If no commands are passed to
         satcli, this one will be executed.  By default it raises an
@@ -39,19 +40,19 @@ class RootController(CementController):
         """
         raise CementArgumentError, "A command is required. See --help?"
     
-    @expose()
-    def freeform(self, cli_opts, cli_args):
+    @expose('satcli.templates.root.freeform')
+    def freeform(self, *args, **kw):
         """
         Takes an API path (i.e. auth.login) and args (i.e username) and
         attempts to make a call to the RHN Proxy.  Useful for development.
         """
-        cmd = cli_args.pop(0)
-        path = cli_args.pop(0)
-        args = cli_args
+        cmd = self.cli_args.pop(0)
+        path = self.cli_args.pop(0)
+        args = self.cli_args
  
         proxy = RHNSatelliteProxy()
         
-        if cli_opts.user:
+        if self.cli_opts.user:
             proxy.get_session(use_cache=False)
         else:
             proxy.get_session()    
@@ -60,15 +61,10 @@ class RootController(CementController):
             res = proxy.call(path, *args)
         except xmlrpclib.Fault, e:
             res = proxy.noauth_call(path, *args)
-        
-        print
-        print "Freeform API Call Output"
-        print "-" * 77
-        print res
-        print
+        return dict(result=res)
     
     @expose()
-    def freeform_help(self, cli_opts, cli_args):
+    def freeform_help(self, *args, **kw):
         print
         print "Attempt to make an API call to the RHN Proxy:"
         print

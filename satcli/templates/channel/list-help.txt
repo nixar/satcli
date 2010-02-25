@@ -1,0 +1,25 @@
+
+Help info for the 'list' command
+------------------------------------------------------------------------------
+
+The 'channel list' command is used to list channel information via the 
+ChannelHandler.  It will call 'listAllChannels' by default, but can be altered
+via the '--type' option:
+
+Examples:
+
+    $ satcli channel list
+    
+    $ satcli channel list --type my
+
+    $ satcli channel list --type popular --count 1000
+    
+    $ satcli channel list --type redhat
+    
+    $ satcli channel list --type retired
+
+    $ satcli channel list --type shared
+    
+    $ satcli channel list --type software
+    
+    

@@ -23,6 +23,7 @@ dcf['app_module'] = 'satcli' # name of the library dir
 dcf['app_basepath'] = os.path.dirname(__file__)
 
 dcf['enabled_plugins'] = [] # no default plugins, add via the config file
+dcf['show_plugin_load'] = False
 dcf['debug'] = False
 dcf['datadir'] = '%s/data' % prefix
 dcf['tmpdir'] = '%s/tmp' % prefix

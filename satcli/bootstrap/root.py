@@ -15,8 +15,6 @@ from cement.core.hook import register_hook
 def options_hook(*args, **kwargs):
     # This hook allows us to append options to the root namespace
     root_options = init_parser()
-    root_options.add_option('-R', '--root-option', action ='store_true', 
-        dest='root_option', default=None, help='Example root option') 
     root_options.add_option('--json', action='store_true',
         dest='enable_json', default=None, 
         help='render output as json (Cement CLI-API)')
@@ -24,6 +22,8 @@ def options_hook(*args, **kwargs):
         dest='debug', default=None, help='toggle debug output')
     root_options.add_option('--quiet', action='store_true',
         dest='quiet', default=None, help='disable console logging')
+    root_options.add_option('--all', action='store_true',
+        dest='all', default=None, help='disable full output when applicable')
     return ('root', root_options)
 
 @register_hook()
@@ -59,7 +59,5 @@ def options_hook(*args, **kwargs):
     return ('root', global_options)
     
 # Import all additional (non-plugin) bootstrap libraries here    
-# 
-#   from satcli.bootstrap import example
-#
-    
+
+from satcli.bootstrap import channel

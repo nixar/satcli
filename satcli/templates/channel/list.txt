@@ -1,0 +1,3 @@
+{% for channel in channels %}\
+$channel.label
+{% end %}
