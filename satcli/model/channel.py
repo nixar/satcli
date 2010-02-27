@@ -23,3 +23,9 @@ class Channel(object):
         self.gpg_key_fp = None
         self.end_of_life = None
         self.parent_channel_label = None
+    
+    @property
+    def latest_packages(self):
+        # lookup latest packages with self.label
+        pass
+    
