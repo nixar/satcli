@@ -8,7 +8,9 @@ from rosendale.helpers.cache.simple_cache import SimpleCache
  
 from satcli import user_cache
 from satcli.appmain import KNOWN_COMPAT
- 
+from satcli import model
+
+
 log = get_logger(__name__)
         
 class RHNSatelliteProxy(object):
@@ -135,4 +137,8 @@ class RHNSatelliteProxy(object):
         log.debug('making call to rhn: self.session.%s(%s)' % (path, [str(x) for x in args]))
         res = eval("self.session.%s(*args)" % path)
         return res
+    
+    def query(self, obj):
+        if obj == model.Channel:
+            print 'hoooaaaaa'
         

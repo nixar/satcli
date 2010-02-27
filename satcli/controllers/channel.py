@@ -13,7 +13,7 @@ from cement.core.controller import CementController, expose
 from cement.core.hook import run_hooks
 
 from satcli.exc import SatCLIArgumentError
-from satcli.model.channel import ChannelModel
+from satcli.model.channel import Channel
 from satcli.lib.proxy import RHNSatelliteProxy
 
 log = get_logger(__name__)
@@ -27,6 +27,10 @@ class ChannelController(CementController):
             self.proxy.get_session(use_cache=False)
         else:
             self.proxy.get_session()  
+        
+    @expose()
+    def test(self, *args, **kw):
+        self.proxy.query(Channel)
         
     @expose(namespace='channel')
     def list(self, *args, **kw):
@@ -59,6 +63,11 @@ class ChannelController(CementController):
     @expose('satcli.templates.channel.list-help', namespace='channel')
     def list_help(self, *args, **kw):
         return dict()
+    
+    @expose('satcli.templates.channel.show', namespace='channel')
+    def show(self, *args, **kw):
+        
+        return dict(channel=channel)
     
     @expose('satcli.templates.channel.list-packages', namespace='channel')
     def list_packages(self, *args, **kw):
