@@ -13,24 +13,18 @@ from cement.core.controller import CementController, expose
 from cement.core.hook import run_hooks
 
 from satcli.exc import SatCLIArgumentError
-from satcli.model.channel import Channel
-from satcli.lib.proxy import RHNSatelliteProxy
+from satcli.model import root as model
+from satcli.controller import SatCLIController
 
 log = get_logger(__name__)
 
-class ChannelController(CementController):
-    def __init__(self, *args, **kw):
-        CementController.__init__(self, *args, **kw)
-        self.proxy = RHNSatelliteProxy()
-        
-        if self.cli_opts.user:
-            self.proxy.get_session(use_cache=False)
-        else:
-            self.proxy.get_session()  
-        
+class ChannelController(SatCLIController):        
     @expose()
     def test(self, *args, **kw):
-        self.proxy.query(Channel)
+        channels = self.proxy.query(model.Channel, regex='php-4')
+        for c in channels:
+            print c.label
+        
         
     @expose(namespace='channel')
     def list(self, *args, **kw):
@@ -38,7 +32,9 @@ class ChannelController(CementController):
                  'shared', 'software']
                  
         if not self.cli_opts.type:
-            channels = self.proxy.call('channel.listAllChannels')
+            #channels = self.proxy.call('channel.listAllChannels')
+            channels = self.proxy.search(Channel)
+            
         elif self.cli_opts.type.lower() == 'popular':
             if not self.cli_opts.popularity_count:
                 raise SatCLIArgumentError, "Server popularity count required."
