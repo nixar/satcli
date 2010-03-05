@@ -139,7 +139,7 @@ class RHNSatelliteProxy(object):
         res = eval("self.session.%s(*args)" % path)
         return res
     
-    def query(self, obj, just_one=False, regex=None, **kw):
+    def query(self, obj, regex=None, just_one=False, **kw):
         if obj == model.Channel:
             i = model.Channel.interface(proxy=self)
             return i.query(just_one=just_one, regex=regex, **kw)

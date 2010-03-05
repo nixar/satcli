@@ -6,12 +6,13 @@ from cement.core.log import get_logger
 from cement.core.namespace import get_config
 
 from satcli.interface import RHNSatelliteInterface
+from satcli.exc import SatCLIArgumentError
 
 log = get_logger(__name__)
 config = get_config()
 
 class ChannelInterface(RHNSatelliteInterface):        
-    def query(self, just_one=False, regex=None, **kw):
+    def query(self, regex=None, just_one=False, **kw):
         filters = kw
         channels = self.proxy.call('channel.listAllChannels')
         channel_objects = []

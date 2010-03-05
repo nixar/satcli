@@ -21,10 +21,19 @@ log = get_logger(__name__)
 class ChannelController(SatCLIController):        
     @expose()
     def test(self, *args, **kw):
-        channels = self.proxy.query(model.Channel, regex='php-4')
+        channels = self.proxy.query(model.Channel, regex='php-4', just_one=True)
         for c in channels:
             print c.label
         
+    @expose(namespace='channel')
+    def query(self, *args, **kw):
+        if self.cli_opts.regex:
+            channels = self.proxy.query(model.Channel, self.cli_opts.regex)
+            for channel in channels:
+                print channel.label
+                
+        elif self.cli_opts.filter:
+            pass
         
     @expose(namespace='channel')
     def list(self, *args, **kw):
