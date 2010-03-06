@@ -1,7 +1,4 @@
 
-Help info for the 'list' command
-------------------------------------------------------------------------------
-
 The 'channel list' command is used to list channel information via the 
 ChannelHandler.  It will call 'listAllChannels' by default, but can be altered
 via the '--type' option:

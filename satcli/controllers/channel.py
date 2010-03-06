@@ -38,28 +38,28 @@ class ChannelController(SatCLIController):
         
     @expose(namespace='channel')
     def query(self, *args, **kw):
-        errors = {}
+        errors = []
         if not self.cli_opts.regex:
             if len(sys.argv) >= 4:
-                self.cli_opts.label = sys.argv[3]
+                self.cli_opts.regex = sys.argv[3]
             else:
-                errors['SatCLIArgumentError'] = "--regex required for query."
-        if errors:
-            abort(errors)
+                errors.append(('SatCLIArgumentError',
+                               "A search string (--regex) is required for query."))
+        abort_on_error(errors)
                 
-        channels = self.proxy.query(model.Channel, self.cli_opts.regex)
+        channels = self.proxy.query(model.Channel, self.cli_opts.regex, all_data=False)
         for channel in channels:
             print channel.label        
         return dict(channels=channels)
         
-    @expose(namespace='channel')
+    @expose('satcli.templates.channel.list', namespace='channel')
     def list(self, *args, **kw):
         known = ['all', 'my', 'popular', 'redhat', 'retired', 
                  'shared', 'software']
                  
         if not self.cli_opts.type:
             #channels = self.proxy.call('channel.listAllChannels')
-            channels = self.proxy.search(Channel)
+            channels = self.proxy.query(model.Channel, all_data=False)
             
         elif self.cli_opts.type.lower() == 'popular':
             if not self.cli_opts.popularity_count:
@@ -77,9 +77,6 @@ class ChannelController(SatCLIController):
                 type = type.capitalize()
                 
             channels = self.proxy.call('channel.list%sChannels' % type)
-                
-        for channel in channels:
-            print channel['label']
         return dict(channels=channels)
         
     @expose('satcli.templates.channel.list-packages', namespace='channel')
@@ -113,5 +110,5 @@ class ChannelController(SatCLIController):
         return dict()
     
     @expose('satcli.templates.channel.query-help', namespace='channel')
-    def show_help(self, *args, **kw):
+    def query_help(self, *args, **kw):
         return dict()
