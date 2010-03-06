@@ -4,7 +4,7 @@ class RHNSatelliteInterface(object):
     def __init__(self, proxy):
         self.proxy = proxy
     
-    def query(self, regex=None, just_one=False, **kw):
+    def query(self, regex=None, just_one=False, all_data=True, **filters):
         raise SatCLIRuntimeError, \
             "RHNSatelliteInterface.search must be subclassed"
     

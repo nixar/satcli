@@ -6,6 +6,7 @@ main() function of this file.
 """
 
 import sys
+import xmlrpclib
 from pkg_resources import get_distribution
 
 from cement.core.exc import CementArgumentError, CementConfigError, \
@@ -65,6 +66,8 @@ def main():
     except SatCLIRuntimeError, e:
         print("SatCLIRuntimeError > %s" % e)
         sys.exit(e.code)
+    except xmlrpclib.Fault, e:
+        print("xmlrpclib.Fault > %s" % e)
     sys.exit(0)
         
 if __name__ == '__main__':

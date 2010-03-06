@@ -12,8 +12,7 @@ log = get_logger(__name__)
 config = get_config()
 
 class ChannelInterface(RHNSatelliteInterface):        
-    def query(self, regex=None, just_one=False, **kw):
-        filters = kw
+    def query(self, regex=None, just_one=False, all_data=False, **filters):
         channels = self.proxy.call('channel.listAllChannels')
         channel_objects = []
         for channel in channels:
@@ -34,15 +33,22 @@ class ChannelInterface(RHNSatelliteInterface):
                 append = True
             
             if append:
+                if all_data:
+                    details = self.proxy.call('channel.software.getDetails', 
+                                              channel['label'])
+                    channel.update(details)
                 channel_objects.append(self._objectize(Channel, channel))
         
         if just_one:
             if len(channel_objects) > 1:
                 raise SatCLIArgumentError, "More than one channel found!"
+            elif len(channel_objects) == 0:
+                raise SatCLIArgumentError, "No channels found matching that query!"
             else: 
                 return channel_objects[0]
         else:        
             return channel_objects
+    
     
 class Channel(object):
     interface = ChannelInterface
@@ -63,6 +69,8 @@ class Channel(object):
         self.gpg_key_fp = None
         self.end_of_life = None
         self.parent_channel_label = None
+        self.packages = None
+        self.systems = None
     
     @property
     def latest_packages(self):

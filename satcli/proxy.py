@@ -130,18 +130,20 @@ class RHNSatelliteProxy(object):
                 )
         
     def call(self, path, *args, **kwargs):
-        log.debug('making call to rhn: self.session.%s(self.token, %s)' % (path, [str(x) for x in args]))
+        log.debug('making call to rhn: self.session.%s(self.token, %s)' % \
+                 (path, [str(x) for x in args]))
         res = eval("self.session.%s(self.token, *args)" % path)
         return res
  
     def noauth_call(self, path, *args, **kwargs):
-        log.debug('making call to rhn: self.session.%s(%s)' % (path, [str(x) for x in args]))
+        log.debug('making call to rhn: self.session.%s(%s)' % \
+                 (path, [str(x) for x in args]))
         res = eval("self.session.%s(*args)" % path)
         return res
     
-    def query(self, obj, regex=None, just_one=False, **kw):
+    def query(self, obj, regex=None, just_one=False, all_data=True, **filters):
         if obj == model.Channel:
             i = model.Channel.interface(proxy=self)
-            return i.query(just_one=just_one, regex=regex, **kw)
+            return i.query(regex, just_one, all_data, **filters)
             
         
