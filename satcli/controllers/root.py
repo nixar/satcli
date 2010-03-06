@@ -21,14 +21,13 @@ config = get_config()
 
 class RootController(CementController):
     @expose('satcli.templates.root.error', is_hidden=True)
-    def error(self, errors={}, *args, **kw):
+    def error(self, errors=[], *args, **kw):
         """
-        This can be called when catching exceptions.  It expects an 
-        'errors' dictionary to be passed via **kwargs.
+        This can be called when catching exceptions.  It expects a list of 
+        tuples to be passed.
         
         """
-        if errors:
-            return dict(errors=errors)
+        return dict(errors=errors)
     
     @expose(is_hidden=True)
     def default(self, *args, **kw):
