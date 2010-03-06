@@ -1,0 +1,5 @@
+
+Display all information for a channel.
+
+    $ satcli channel show rhel-i386-server-5
+    

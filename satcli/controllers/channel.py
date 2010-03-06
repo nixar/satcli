@@ -32,6 +32,10 @@ class ChannelController(SatCLIController):
                                    label=self.cli_opts.label)
         return dict(channel=channel)
         
+    @expose('satcli.templates.channel.show-help', namespace='channel')
+    def show_help(self, *args, **kw):
+        return dict()
+        
     @expose(namespace='channel')
     def query(self, *args, **kw):
         errors = {}
