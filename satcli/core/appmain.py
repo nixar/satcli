@@ -16,9 +16,9 @@ from cement.core.app_setup import lay_cement
 from cement.core.configuration import ensure_api_compat
 from cement.core.command import run_command
 
-from satcli.config import default_config
-from satcli.exc import SatCLIArgumentError, SatCLIConfigError, \
-                       SatCLIRuntimeError
+from satcli.core.config import default_config
+from satcli.core.exc import SatCLIArgumentError, SatCLIConfigError, \
+                            SatCLIRuntimeError
                        
 REQUIRED_CEMENT_API = '0.7-0.8:20100210'
 KNOWN_COMPAT = ['10.8']

@@ -25,7 +25,7 @@ setup(name='satcli',
     test_suite='nose.collector',
     entry_points="""
     [console_scripts]
-    satcli = satcli.appmain:main
+    satcli = satcli.core.appmain:main
     """,
     namespace_packages=[
         'satcli', 

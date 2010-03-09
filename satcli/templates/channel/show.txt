@@ -6,6 +6,7 @@ ${"%+25s" % 'Channel Label'} | ${"%-50s" % channel.label}
 ${"%+25s" % 'Parent Channel'} | ${"%-50s" % channel.parent_channel_label}
 ${"%+25s" % 'Summary'} | ${"%-50s" % channel.summary}
 ${"%+25s" % 'Description'} | ${"%-50s" % channel.description}
+${"%+25s" % 'Arch'} | ${"%-50s" % channel.arch_name}
 ${"%+25s" % 'Packages'} | ${"%-50s" % channel.packages}
 ${"%+25s" % 'Subscribed Systems'} | ${"%-50s" % channel.systems}
 

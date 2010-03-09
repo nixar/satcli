@@ -14,7 +14,7 @@ from cement.core.namespace import get_config
 from cement.core.log import get_logger
 
 from satcli import user_cache
-from satcli.proxy import RHNSatelliteProxy
+from satcli.core.proxy import RHNSatelliteProxy
 
 log = get_logger(__name__)
 config = get_config()

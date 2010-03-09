@@ -1,7 +1,7 @@
 
 from cement.core.controller import CementController
 
-from satcli.proxy import RHNSatelliteProxy
+from satcli.core.proxy import RHNSatelliteProxy
 
 class SatCLIController(CementController):
     def __init__(self, cli_opts=None, cli_args=None):

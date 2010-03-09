@@ -17,7 +17,7 @@ channel.options.add_option('--id', action='store', dest='id',
     default=None, help='channel id')
 channel.options.add_option('--name', action='store', dest='name',
     default=None, help='channel name')
-channel.options.add_option('--arch', action='store', dest='arch',
+channel.options.add_option('--arch', action='store', dest='arch_name',
     default=None, help='channel arch label')
 channel.options.add_option('--summary', action='store', dest='summary',
     default=None, help='channel summary')
@@ -40,8 +40,8 @@ channel.options.add_option('--gpg-fp', action='store', dest='gpg_key_fp',
     default=None, help="channel gpg key finger print")
 channel.options.add_option('--eol', action='store', dest='end_of_life',
     default=None, help="channel end of life")
-channel.options.add_option('--parent-label', action='store', dest='gpg_key_url',
-    default=None, help="channel gpg key url")
+channel.options.add_option('--parent-label', action='store', 
+    dest='parent_channel_label', default=None, help="channel parent label")
 channel.options.add_option('--regex', action='store', dest='regex',
     default=None, help="channel query string [regular expression]")    
 # Officialize and register the namespace

@@ -7,9 +7,8 @@ from cement.core.log import get_logger
 from rosendale.helpers.cache.simple_cache import SimpleCache
  
 from satcli import user_cache
-from satcli.appmain import KNOWN_COMPAT
-from satcli.exc import SatCLIRuntimeError
-
+from satcli.core.appmain import KNOWN_COMPAT
+from satcli.core.exc import SatCLIRuntimeError
 from satcli.model import root as model
 
 log = get_logger(__name__)
@@ -145,5 +144,13 @@ class RHNSatelliteProxy(object):
         if obj == model.Channel:
             i = model.Channel.interface(proxy=self)
             return i.query(regex, just_one, all_data, **filters)
+    
+        elif obj == model.Arch:
+            i = model.Arch.interface(proxy=self)
+            return i.query(regex, just_one, all_data, **filters)
             
+    def create(self, obj):
+        if obj.__class__ == model.Channel:
+            i = model.Channel.interface(proxy=self)
+            return i.create(obj)        
         

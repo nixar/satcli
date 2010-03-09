@@ -10,14 +10,15 @@ This controller handles interactions with the following API handlers:
 
 import sys
 
+from cement.core.exc import CementArgumentError
 from cement.core.log import get_logger
 from cement.core.controller import CementController, expose
 from cement.core.hook import run_hooks
 from rosendale.helpers.error import abort_on_error
 
-from satcli.exc import SatCLIArgumentError
+from satcli.core.exc import SatCLIArgumentError
 from satcli.model import root as model
-from satcli.controller import SatCLIController
+from satcli.core.controller import SatCLIController
 
 log = get_logger(__name__)
 
@@ -35,6 +36,25 @@ class ChannelController(SatCLIController):
         channel = self.proxy.query(model.Channel, just_one=True, 
                                    label=self.cli_opts.label)
         return dict(channel=channel)
+        
+    @expose(namespace='channel')
+    def create(self, *args, **kw):
+        try:
+            assert self.cli_opts.label, "channel -l/--label rquired."
+            assert self.cli_opts.name, "channel --name required."
+            assert self.cli_opts.summary, "channel --summary required."
+            assert self.cli_opts.arch_name, "channel --arch required."
+        except AssertionError, e:
+            raise SatCLIArgumentError, str(e)
+            
+        c = model.Channel()
+        c.label = self.cli_opts.label
+        c.name = self.cli_opts.name
+        c.summary = self.cli_opts.summary
+        c.arch = self.proxy.query(model.Arch, just_one=True, 
+                                  name=self.cli_opts.arch_name)
+        c.parent_channel_label = self.cli_opts.parent_channel_label or ''
+        self.proxy.create(c)
         
     @expose(namespace='channel')
     def query(self, *args, **kw):
@@ -94,6 +114,12 @@ class ChannelController(SatCLIController):
         packages = self.proxy.call(call_path, self.cli_opts.label)
         return dict(packages=packages)
     
+    @expose(namespace='channel')
+    def list_archs(self, *args, **kw):
+        archs = self.proxy.query(model.Arch)
+        for arch in archs:
+            print arch.name
+        return dict(archs=archs)
 
 
     # Help Commands
