@@ -1,4 +1,5 @@
 """Application global variables."""
 
 class AppGlobals(object):
-    pass
+    def __init__(self):
+        self.proxy = None

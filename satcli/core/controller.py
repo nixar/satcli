@@ -1,6 +1,7 @@
 
 from cement.core.controller import CementController
 
+from satcli import app_globals as g
 from satcli.core.proxy import RHNSatelliteProxy
 
 class SatCLIController(CementController):
@@ -9,9 +10,9 @@ class SatCLIController(CementController):
         self.cli_opts = cli_opts
         self.cli_args = cli_args
         
-        self.proxy = RHNSatelliteProxy()
+        g.proxy = RHNSatelliteProxy()
         
         if self.cli_opts.user:
-            self.proxy.get_session(use_cache=False)
+            g.proxy.get_session(use_cache=False)
         else:
-            self.proxy.get_session()  
+            g.proxy.get_session()  

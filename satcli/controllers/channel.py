@@ -16,6 +16,7 @@ from cement.core.controller import CementController, expose
 from cement.core.hook import run_hooks
 from rosendale.helpers.error import abort_on_error
 
+from satcli import app_globals as g
 from satcli.core.exc import SatCLIArgumentError
 from satcli.model import root as model
 from satcli.core.controller import SatCLIController
@@ -33,7 +34,7 @@ class ChannelController(SatCLIController):
                 errors.append(('SatCLIArgumentError', 
                                'channel -l/--label required.'))
         abort_on_error(errors)
-        channel = self.proxy.query(model.Channel, just_one=True, 
+        channel = g.proxy.query(model.Channel, just_one=True, 
                                    label=self.cli_opts.label)
         return dict(channel=channel)
         
@@ -51,10 +52,24 @@ class ChannelController(SatCLIController):
         c.label = self.cli_opts.label
         c.name = self.cli_opts.name
         c.summary = self.cli_opts.summary
-        c.arch = self.proxy.query(model.Arch, just_one=True, 
-                                  name=self.cli_opts.arch_name)
+        c.arch_name = self.cli_opts.arch_name
         c.parent_channel_label = self.cli_opts.parent_channel_label or ''
-        self.proxy.create(c)
+        g.proxy.create(c)
+    
+    @expose(namespace='channel')
+    def delete(self, *args, **kw):
+        errors = []
+        if not self.cli_opts.label:
+            if len(sys.argv) >= 4:
+                self.cli_opts.label = sys.argv[3]
+            else:
+                errors.append(('SatCLIArgumentError', 
+                               'channel -l/--label required.'))
+        abort_on_error(errors)
+        channel = g.proxy.query(model.Channel, just_one=True, 
+                                label=self.cli_opts.label)
+        g.proxy.delete(channel)
+        return dict()
         
     @expose(namespace='channel')
     def query(self, *args, **kw):
@@ -67,25 +82,25 @@ class ChannelController(SatCLIController):
                                "A search string (--regex) is required for query."))
         abort_on_error(errors)
                 
-        channels = self.proxy.query(model.Channel, self.cli_opts.regex, all_data=False)
+        channels = g.proxy.query(model.Channel, self.cli_opts.regex, all_data=False)
         for channel in channels:
             print channel.label        
         return dict(channels=channels)
         
-    @expose('satcli.templates.channel.list', namespace='channel')
+    @expose(namespace='channel')
     def list(self, *args, **kw):
         known = ['all', 'my', 'popular', 'redhat', 'retired', 
                  'shared', 'software']
                  
         if not self.cli_opts.type:
             #channels = self.proxy.call('channel.listAllChannels')
-            channels = self.proxy.query(model.Channel, all_data=False)
+            channels = g.proxy.query(model.Channel, all_data=False)
             
         elif self.cli_opts.type.lower() == 'popular':
             if not self.cli_opts.popularity_count:
                 raise SatCLIArgumentError, "Server popularity count required."
                 
-            channels = self.proxy.call('channel.listPopularChannels', 
+            channels = g.proxy.call('channel.listPopularChannels', 
                                        int(self.cli_opts.popularity_count))
         else:
             type = self.cli_opts.type.lower()
@@ -96,7 +111,11 @@ class ChannelController(SatCLIController):
             else:
                 type = type.capitalize()
                 
-            channels = self.proxy.call('channel.list%sChannels' % type)
+            channels = g.proxy.call('channel.list%sChannels' % type)
+            
+        for channel in channels:
+            print channel.label
+            
         return dict(channels=channels)
         
     @expose('satcli.templates.channel.list-packages', namespace='channel')
@@ -111,12 +130,12 @@ class ChannelController(SatCLIController):
         else:
             call_path = 'channel.software.listLatestPackages'
             
-        packages = self.proxy.call(call_path, self.cli_opts.label)
+        packages = g.proxy.call(call_path, self.cli_opts.label)
         return dict(packages=packages)
     
     @expose(namespace='channel')
     def list_archs(self, *args, **kw):
-        archs = self.proxy.query(model.Arch)
+        archs = g.proxy.query(model.Arch)
         for arch in archs:
             print arch.name
         return dict(archs=archs)

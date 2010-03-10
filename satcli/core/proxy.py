@@ -10,6 +10,7 @@ from satcli import user_cache
 from satcli.core.appmain import KNOWN_COMPAT
 from satcli.core.exc import SatCLIRuntimeError
 from satcli.model import root as model
+from satcli.interfaces import root as interface
 
 log = get_logger(__name__)
 
@@ -142,15 +143,19 @@ class RHNSatelliteProxy(object):
     
     def query(self, obj, regex=None, just_one=False, all_data=True, **filters):
         if obj == model.Channel:
-            i = model.Channel.interface(proxy=self)
+            i = interface.ChannelInterface()
             return i.query(regex, just_one, all_data, **filters)
     
         elif obj == model.Arch:
-            i = model.Arch.interface(proxy=self)
+            i = interface.ArchInterface()
             return i.query(regex, just_one, all_data, **filters)
             
     def create(self, obj):
         if obj.__class__ == model.Channel:
-            i = model.Channel.interface(proxy=self)
+            i = interface.ChannelInterface()
             return i.create(obj)        
-        
+    
+    def delete(self, obj):
+        if obj.__class__ == model.Channel:
+            i = interface.ChannelInterface()
+            return i.delete(obj)        

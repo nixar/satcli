@@ -34,5 +34,6 @@ setup(name='satcli',
         'satcli.model',
         'satcli.helpers',
         'satcli.templates',
+        'satcli.interfaces',
         ],
     )

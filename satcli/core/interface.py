@@ -1,8 +1,8 @@
 """Base interface class to setup CRUD operations."""
         
 class RHNSatelliteInterface(object):
-    def __init__(self, proxy):
-        self.proxy = proxy
+    def __init__(self):
+        pass
     
     def query(self, regex=None, just_one=False, all_data=True, **filters):
         raise SatCLIRuntimeError, \
