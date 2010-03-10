@@ -1,0 +1,9 @@
+
+Query RHN for packages:
+
+    $ satcli package search --query php
+    
+    $ satcli package search --pkg php-4.3.9-3.15-i386
+    
+    $ satcli package search --pkg-name php --pkg-version 4.3.9
+    

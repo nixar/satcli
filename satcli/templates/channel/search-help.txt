@@ -1,0 +1,13 @@
+
+Query RHN for a list of channels:
+
+    $ satcli channel search 'rhel-(.*)-server-5'
+    ...
+    
+    $ satcli channel search '^rhel-(i386|x86_64)-server-[0-9]$'
+    ...
+    
+    $ satcli channel search 'channel-label-keyword'
+    ...
+    
+    

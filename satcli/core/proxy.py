@@ -141,21 +141,29 @@ class RHNSatelliteProxy(object):
         res = eval("self.session.%s(*args)" % path)
         return res
     
-    def query(self, obj, regex=None, just_one=False, all_data=True, **filters):
+    def query(self, obj, regex=None, just_one=False, all_data=False, **filters):
         if obj == model.Channel:
             i = interface.ChannelInterface()
-            return i.query(regex, just_one, all_data, **filters)
-    
+            return i.query(regex, just_one, all_data, **filters)    
         elif obj == model.Arch:
             i = interface.ArchInterface()
             return i.query(regex, just_one, all_data, **filters)
-            
+        elif obj == model.Package:
+            i = interface.PackageInterface()
+            return i.query(regex, just_one, all_data, **filters)
+                
     def create(self, obj):
         if obj.__class__ == model.Channel:
             i = interface.ChannelInterface()
             return i.create(obj)        
-    
+        elif obj.__class__ == model.Package:
+            i = interface.PackageInterface()
+            return i.create(obj)        
+            
     def delete(self, obj):
         if obj.__class__ == model.Channel:
             i = interface.ChannelInterface()
-            return i.delete(obj)        
+            return i.delete(obj)
+        elif obj.__class__ == model.Package:
+            i = interface.PackageInterface()
+            return i.delete(obj)

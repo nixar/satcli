@@ -24,6 +24,10 @@ def options_hook(*args, **kwargs):
         dest='quiet', default=None, help='disable console logging')
     root_options.add_option('--all', action='store_true',
         dest='all', default=None, help='disable full output when applicable')
+    root_options.add_option('-r', '--regex', action='store', dest='regex',
+        default=None, help="query string [regular expression]")    
+    root_options.add_option('-q', '--query', action='store', dest='query',
+        default=None, help="query string [plain]")
     return ('root', root_options)
 
 @register_hook()
@@ -60,4 +64,4 @@ def options_hook(*args, **kwargs):
     
 # Import all additional (non-plugin) bootstrap libraries here    
 
-from satcli.bootstrap import channel
+from satcli.bootstrap import channel, package

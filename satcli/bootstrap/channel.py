@@ -1,10 +1,10 @@
+"""Bootstrap the channel namespace."""
 
 from cement.core.namespace import CementNamespace, register_namespace
 
 channel = CementNamespace(
     label='channel', 
     controller='ChannelController',
-    description='Channel Plugin for Satellite CLI',
     )
 
 channel.options.add_option('-t', '--type', action='store', dest='type', 
@@ -42,7 +42,5 @@ channel.options.add_option('--eol', action='store', dest='end_of_life',
     default=None, help="channel end of life")
 channel.options.add_option('--parent-label', action='store', 
     dest='parent_channel_label', default=None, help="channel parent label")
-channel.options.add_option('--regex', action='store', dest='regex',
-    default=None, help="channel query string [regular expression]")    
 # Officialize and register the namespace
 register_namespace(channel)

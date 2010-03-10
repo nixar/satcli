@@ -1,0 +1,26 @@
+
+Details: 
+------------------------------------------------------------------------------
+
+${"%+20s" % 'Summary'} | ${"%-55s" % package.summary.strip('\n')}
+${"%+20s" % 'Package ID'} | ${"%-55s" % package.id}
+${"%+20s" % 'Vendor'} | ${"%-55s" % package.vendor}
+${"%+20s" % 'MD5Sum'} | ${"%-55s" % package.md5sum}
+${"%+20s" % 'Build Host'} | ${"%-55s" % package.build_host}
+${"%+20s" % 'Build Date'} | ${"%-55s" % package.build_date}
+${"%+20s" % 'License'} | ${"%-55s" % package.license}
+${"%+20s" % 'Arch'} | ${"%-55s" % package.arch}
+${"%+20s" % 'File'} | ${"%-55s" % package.file}
+${"%+20s" % 'File Size'} | ${"%-55s" % package.size}
+${"%+20s" % 'Payload Size'} | ${"%-55s" % package.payload_size}
+${"%+20s" % 'Provider'} | ${"%-55s" % package.provider}
+
+Description:
+------------------------------------------------------------------------------
+${"%-77s" % package.description}
+
+Providing Channels:
+------------------------------------------------------------------------------
+{% for channel in package.providing_channels %}\
+    * ${"%-55s" % channel}
+{% end %}

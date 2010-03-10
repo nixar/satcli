@@ -77,14 +77,14 @@ class ChannelController(SatCLIController):
         return dict()
         
     @expose(namespace='channel')
-    def query(self, *args, **kw):
+    def search(self, *args, **kw):
         errors = []
         if not self.cli_opts.regex:
             if len(sys.argv) >= 4:
                 self.cli_opts.regex = sys.argv[3]
             else:
                 errors.append(('SatCLIArgumentError',
-                               "A search string (--regex) is required for query."))
+                               "A search string (-r/--regex) is required for query."))
         abort_on_error(errors)
                 
         channels = g.proxy.query(model.Channel, self.cli_opts.regex, all_data=False)
@@ -179,6 +179,6 @@ class ChannelController(SatCLIController):
     def show_help(self, *args, **kw):
         return dict()
     
-    @expose('satcli.templates.channel.query-help', namespace='channel')
+    @expose('satcli.templates.channel.search-help', namespace='channel')
     def query_help(self, *args, **kw):
         return dict()
