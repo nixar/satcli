@@ -155,7 +155,7 @@ class ChannelController(SatCLIController):
         # FIX ME: Need to update with system model once ready    
         systems = g.proxy.call(call_path, self.cli_opts.label)
         for s in systems:
-            print "%+15s | %s" % (s['id'], s['name'])
+            print s['id']
         return dict(systems=systems)
         
     @expose(namespace='channel')
