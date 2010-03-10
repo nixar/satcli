@@ -57,7 +57,7 @@ class ChannelController(SatCLIController):
         g.proxy.create(c)
     
     @expose(namespace='channel')
-    def delete(self, *args, **kw):
+    def delete(self, *args, **kw):            
         errors = []
         if not self.cli_opts.label:
             if len(sys.argv) >= 4:
@@ -66,6 +66,11 @@ class ChannelController(SatCLIController):
                 errors.append(('SatCLIArgumentError', 
                                'channel -l/--label required.'))
         abort_on_error(errors)
+        res = raw_input("Permanantly delete channel '%s'? [y/N] " % \
+                        self.cli_opts.label)
+        if not res.lower() in ['y', 'yes']:
+            sys.exit(1)
+
         channel = g.proxy.query(model.Channel, just_one=True, 
                                 label=self.cli_opts.label)
         g.proxy.delete(channel)
@@ -118,7 +123,7 @@ class ChannelController(SatCLIController):
             
         return dict(channels=channels)
         
-    @expose('satcli.templates.channel.list-packages', namespace='channel')
+    @expose(namespace='channel')
     def list_packages(self, *args, **kw):
         if not self.cli_opts.label:
             if len(sys.argv) >= 4:
@@ -130,9 +135,29 @@ class ChannelController(SatCLIController):
         else:
             call_path = 'channel.software.listLatestPackages'
             
+        # FIX ME: Need to update with package model once ready
         packages = g.proxy.call(call_path, self.cli_opts.label)
+        for p in packages:
+            print "%s-%s-%s.%s" % (p['name'], p['version'], p['release'], 
+                                   p['arch_label'])
         return dict(packages=packages)
     
+    @expose(namespace='channel')
+    def list_systems(self, *args, **kw):
+        if not self.cli_opts.label:
+            if len(sys.argv) >= 4:
+                self.cli_opts.label = sys.argv[3]
+            else:
+                raise SatCLIArgumentError, 'channel -l/--label required'
+        
+        call_path = 'channel.software.listSubscribedSystems'
+        
+        # FIX ME: Need to update with system model once ready    
+        systems = g.proxy.call(call_path, self.cli_opts.label)
+        for s in systems:
+            print "%+15s | %s" % (s['id'], s['name'])
+        return dict(systems=systems)
+        
     @expose(namespace='channel')
     def list_archs(self, *args, **kw):
         archs = g.proxy.query(model.Arch)
