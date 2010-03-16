@@ -64,4 +64,4 @@ def options_hook(*args, **kwargs):
     
 # Import all additional (non-plugin) bootstrap libraries here    
 
-from satcli.bootstrap import channel, package
+from satcli.bootstrap import channel, package, errata

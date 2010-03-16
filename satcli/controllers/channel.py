@@ -180,5 +180,5 @@ class ChannelController(SatCLIController):
         return dict()
     
     @expose('satcli.templates.channel.search-help', namespace='channel')
-    def query_help(self, *args, **kw):
+    def search_help(self, *args, **kw):
         return dict()

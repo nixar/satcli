@@ -7,40 +7,41 @@ channel = CementNamespace(
     controller='ChannelController',
     )
 
-channel.options.add_option('-t', '--type', action='store', dest='type', 
+channel.options.add_option('-t', '--chan-type', action='store', dest='type', 
     default=None, help='channel type [all, mine, popular...]')
 channel.options.add_option('--count', action='store', dest='popularity_count', 
     default=None, help='popularity count (number of servers)')
-channel.options.add_option('-l', '--label', action='store',
+channel.options.add_option('-l', '--chan-label', action='store',
     dest='label', default=None, help='channel label')
-channel.options.add_option('--id', action='store', dest='id',
+channel.options.add_option('--chan-id', action='store', dest='id',
     default=None, help='channel id')
-channel.options.add_option('--name', action='store', dest='name',
+channel.options.add_option('--chan-name', action='store', dest='name',
     default=None, help='channel name')
-channel.options.add_option('--arch', action='store', dest='arch_name',
+channel.options.add_option('--chan-arch', action='store', dest='arch_name',
     default=None, help='channel arch label')
-channel.options.add_option('--summary', action='store', dest='summary',
+channel.options.add_option('--chan-summary', action='store', dest='summary',
     default=None, help='channel summary')
-channel.options.add_option('--description', action='store', dest='description',
+channel.options.add_option('--chan-desc', action='store', dest='description',
     default=None, help='channel summary', metavar="DESC")
-channel.options.add_option('--maintainer-name', action='store', 
+channel.options.add_option('--chan-maint-name', action='store', 
     dest='maintainer_name', default=None, help="channel maintainer's name",
     metavar="NAME")
-channel.options.add_option('--maintainer-email', action='store', 
+channel.options.add_option('--chan-maint-email', action='store', 
     dest='maintainer_email', default=None, help="channel maintainer's email",
     metavar="EMAIL")
-channel.options.add_option('--maintainer-phone', action='store', 
+channel.options.add_option('--chan-maint-phone', action='store', 
     dest='maintainer_phone', default=None, help="channel maintainer's phone",
     metavar="PHONE")
-channel.options.add_option('--gpg-url', action='store', dest='gpg_key_url',
+channel.options.add_option('--chan-gpg-url', action='store', dest='gpg_key_url',
     default=None, help="channel gpg key url")
-channel.options.add_option('--gpg-id', action='store', dest='gpg_key_id',
+channel.options.add_option('--chan-gpg-id', action='store', dest='gpg_key_id',
     default=None, help="channel gpg key id")
-channel.options.add_option('--gpg-fp', action='store', dest='gpg_key_fp',
+channel.options.add_option('--chan-gpg-fp', action='store', dest='gpg_key_fp',
     default=None, help="channel gpg key finger print")
-channel.options.add_option('--eol', action='store', dest='end_of_life',
+channel.options.add_option('--chan-eol', action='store', dest='end_of_life',
     default=None, help="channel end of life")
-channel.options.add_option('--parent-label', action='store', 
-    dest='parent_channel_label', default=None, help="channel parent label")
+channel.options.add_option('--chan-parent', action='store', 
+    dest='parent_channel_label', default=None, help="channel parent label",
+    metavar='LABEL')
 # Officialize and register the namespace
 register_namespace(channel)

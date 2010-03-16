@@ -1,5 +1,5 @@
 
 Show details of a package:
 
-    $ satcli package show php-5.2.10-1.rs.el5-i386
+    $ satcli package show php-4.3.9-3.15-i386
     

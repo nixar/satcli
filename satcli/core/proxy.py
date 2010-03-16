@@ -151,6 +151,9 @@ class RHNSatelliteProxy(object):
         elif obj == model.Package:
             i = interface.PackageInterface()
             return i.query(regex, just_one, all_data, **filters)
+        elif obj == model.Errata:
+            i = interface.ErrataInterface()
+            return i.query(regex, just_one, all_data, **filters)
                 
     def create(self, obj):
         if obj.__class__ == model.Channel:
@@ -158,6 +161,9 @@ class RHNSatelliteProxy(object):
             return i.create(obj)        
         elif obj.__class__ == model.Package:
             i = interface.PackageInterface()
+            return i.create(obj)
+        elif obj.__class__ == model.Errata:
+            i = interface.ErrataInterface()
             return i.create(obj)        
             
     def delete(self, obj):
@@ -166,4 +172,7 @@ class RHNSatelliteProxy(object):
             return i.delete(obj)
         elif obj.__class__ == model.Package:
             i = interface.PackageInterface()
+            return i.delete(obj)
+        elif obj.__class__ == model.Errata:
+            i = interface.ErrataInterface()
             return i.delete(obj)
