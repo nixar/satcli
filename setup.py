@@ -17,8 +17,8 @@ setup(name='satcli',
         "ConfigObj",
         "Genshi",
         "Cement >=0.7.1, <0.9",
-        # Uncomment to use shared plugins from The Rosendale Project.
-        #"Rosendale",
+        "Rosendale",
+        "pyrpm",
         ],
     setup_requires=[
         ],
