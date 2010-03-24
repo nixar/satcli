@@ -19,6 +19,7 @@ Description:
 ------------------------------------------------------------------------------
 ${"%-77s" % package.description}
 
+
 Providing Channels:
 ------------------------------------------------------------------------------
 {% for channel in package.providing_channels %}\

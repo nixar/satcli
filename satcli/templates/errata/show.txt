@@ -31,7 +31,7 @@ Affected Channels
 ------------------------------------------------------------------------------
 
 {% for channel in errata.affected_channels %}\
-    * $channel.label
+    * $channel.name
 {% end %}
 
 References

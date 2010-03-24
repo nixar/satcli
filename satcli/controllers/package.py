@@ -9,6 +9,7 @@ This controller handles interactions with the following API handlers:
 
 import sys
 import re
+from urllib2 import urlopen
 
 from cement.core.exc import CementArgumentError
 from cement.core.log import get_logger
@@ -33,6 +34,7 @@ class PackageController(SatCLIController):
             full_package
                 RPM package name in the format name-version-release-arch.
         """
+        errors = []
         # FIX ME: This regex is weak sauce, needs improvement
         m = re.match('(^[a-zA-Z].*)-([\d].*)-(.*)-(.*)', full_package)
         if m:
@@ -97,6 +99,39 @@ class PackageController(SatCLIController):
             print "%s-%s-%s-%s" % (p.name, p.version, p.release, p.arch)
         return dict(packages=packages)
     
+    @expose(namespace='package')
+    def get(self, *args, **kw):
+        errors = []
+        if not self.cli_opts.full_package:
+            if len(sys.argv) >= 4:
+                self.cli_opts.full_package = sys.argv[3]
+            else:
+                errors.append(('SatCLIArgumentError', 
+                               'package -p/--pkg required.'))
+        abort_on_error(errors)
+        package = self._get_package(self.cli_opts.full_package)
+        
+        print 'downloading %s ... ' % package.file,
+        f = open(package.file, 'w')
+        data = urlopen(package.url).read()
+        f.write(data)
+        f.close()
+        print 'ok'
+        return dict()
+        
+    @expose(namespace='package')
+    def push(self, *args, **kw):
+        errors = []
+        if not self.cli_opts.full_package:
+            if len(sys.argv) >= 4:
+                self.cli_opts.full_package = sys.argv[3]
+            else:
+                errors.append(('SatCLIArgumentError', 
+                               'package -p/--pkg required.'))
+        abort_on_error(errors)
+        package = self._get_package(self.cli_opts.full_package)
+        return dict(package=package)
+        
     @expose('satcli.templates.package.search-help', namespace='package')
     def search_help(self, *args, **kw):
         return dict()

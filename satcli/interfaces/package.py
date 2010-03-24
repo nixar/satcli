@@ -14,7 +14,14 @@ from satcli.model import root as model
 
 log = get_logger(__name__)
 
-class PackageInterface(RHNSatelliteInterface):                                    
+class PackageInterface(RHNSatelliteInterface):   
+    def _get_exact_package(packages, filters):
+        for p in packages:
+            for f in filters:
+                if filters[f] != packages[f]:
+                    break
+            return p
+                                                 
     def query(self, regex=None, just_one=False, all_data=False, **filters):
         package_objects = []
         if len(filters) > 0:
@@ -31,7 +38,9 @@ class PackageInterface(RHNSatelliteInterface):
         elif regex:
             log.debug("searching package via name query '%s'." % regex)
             packages = g.proxy.call('packages.search.name', regex)
-            
+        else:
+            raise SatCLIArgumentError, 'regex OR filter required.'
+              
         if just_one:
             if len(packages) > 1:
                 exact_pkg = self._get_exact_package(packages, filters)

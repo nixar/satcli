@@ -34,3 +34,11 @@ class ErrataController(SatCLIController):
         errata = g.proxy.query(model.Errata, just_one=True, 
                                advisory=self.cli_opts.advisory)
         return dict(errata=errata)
+    
+    
+    
+    # HELP COMMANDS
+    
+    @expose('satcli.templates.errata.show-help', namespace='errata')
+    def show_help(self, *args, **kw):
+        return dict()

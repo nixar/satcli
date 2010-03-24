@@ -33,3 +33,10 @@ class Package(object):
         self.size = None
         self.path = None
         self.payload_size = None
+
+    def _set_url(self, url):
+        raise SatCLIRuntimeError, "package url can not be set!"
+    def _get_url(self):
+        url = g.proxy.call("packages.getPackageUrl", self.id)
+        return url
+    url = property(_get_url, _set_url)

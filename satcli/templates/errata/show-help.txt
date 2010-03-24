@@ -2,3 +2,4 @@
 Show details of an erratum:
 
     $ satcli errata show RHBA-2010:0065
+    
