@@ -16,6 +16,8 @@ log = get_logger(__name__)
 
 class ErrataInterface(RHNSatelliteInterface):                                    
     def query(self, regex=None, just_one=False, all_data=False, **filters):
+        # FIX ME: Not implemented.
+        raise SatCLIRuntimeError, "errata query not implemented."
         errata_objects = []
         all_errata = []
         
