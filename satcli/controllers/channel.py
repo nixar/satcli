@@ -34,7 +34,7 @@ class ChannelController(SatCLIController):
                 errors.append(('SatCLIArgumentError', 
                                'channel -l/--label required.'))
         abort_on_error(errors)
-        channel = g.proxy.query(model.Channel, just_one=True, 
+        channel = g.proxy.query(model.Channel, just_one=True, all_data=True,
                                    label=self.cli_opts.label)
         return dict(channel=channel)
         

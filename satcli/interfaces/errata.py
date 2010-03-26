@@ -9,7 +9,7 @@ from cement.core.log import get_logger
 
 from satcli import app_globals as g
 from satcli.core.exc import SatCLIArgumentError
-from satcli.core.interface import RHNSatelliteInterface
+from satcli.core.interface import RHNSatelliteInterface, objectize
 from satcli.model import root as model
 
 log = get_logger(__name__)
@@ -57,11 +57,11 @@ class ErrataInterface(RHNSatelliteInterface):
                         details = g.proxy.call('channel.software.getDetails', 
                                                   channel['label'])
                         channel.update(details)
-                    errata_objects.append(self._objectize(model.Channel, channel))
+                    errata_objects.append(objectize(model.Channel, channel))
         
         # FIX ME: do something if all_data=True ?
         for e in all_errata:
-            errata_objects.append(self._objectize(model.Errata, e))
+            errata_objects.append(objectize(model.Errata, e))
                 
         if just_one:
             if len(errata_objects) > 1:

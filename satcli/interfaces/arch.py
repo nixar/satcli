@@ -1,7 +1,7 @@
 
 from satcli import app_globals as g
 from satcli.core.exc import SatCLIArgumentError
-from satcli.core.interface import RHNSatelliteInterface
+from satcli.core.interface import RHNSatelliteInterface, objectize
 from satcli.model import root as model
 
 class ArchInterface(RHNSatelliteInterface):
@@ -26,7 +26,7 @@ class ArchInterface(RHNSatelliteInterface):
                 append = True
             
             if append:
-                arch_objects.append(self._objectize(model.Arch, arch))
+                arch_objects.append(objectize(model.Arch, arch))
         
         if just_one:
             if len(arch_objects) > 1:

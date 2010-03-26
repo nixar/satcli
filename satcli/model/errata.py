@@ -6,7 +6,6 @@ from cement.core.namespace import get_config
 from satcli import app_globals as g
 from satcli.core.interface import RHNSatelliteInterface
 from satcli.core.exc import SatCLIArgumentError
-from satcli.model.channel import Channel
 
 log = get_logger(__name__)
 config = get_config()

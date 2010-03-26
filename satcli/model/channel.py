@@ -1,12 +1,16 @@
 """Channel model."""
 
+from datetime import datetime as dt
+from datetime import timedelta
+
 from cement.core.log import get_logger
 from cement.core.namespace import get_config
 
 from satcli import app_globals as g
-from satcli.core.interface import RHNSatelliteInterface
+from satcli.core.interface import RHNSatelliteInterface, objectize
 from satcli.core.exc import SatCLIArgumentError
 from satcli.model.arch import Arch
+from satcli.model.errata import Errata
 
 log = get_logger(__name__)
 config = get_config()
@@ -37,3 +41,28 @@ class Channel(object):
         arch = g.proxy.query(Arch, just_one=True, name=self.arch_name)
         return arch    
     arch = property(_get_arch, _set_arch)
+    
+    def _set_errata(self):
+        raise SatCLIRuntimeError, "can not set errata this way."
+        
+    def _get_recent_errata(self, *args, **kw):
+        errata_objects = []
+        since = dt.now() - timedelta(days=14)
+        errata = g.proxy.call("channel.software.listErrata", self.label, since)
+        for e in errata:
+            details = g.proxy.call('errata.getDetails', e['advisory_name'])
+            e.update(details)
+            errata_objects.append(objectize(Errata, e))
+        return errata_objects
+        
+    def _get_all_errata(self, *args, **kw):
+        errata_objects = []
+        errata = g.proxy.call("channel.software.listErrata", self.label)
+        for e in errata:
+            details = g.proxy.call('errata.getDetails', e['advisory_name'])
+            e.update(details)
+            errata_objects.append(objectize(Errata, e))
+        return errata_objects
+        
+    errata = property(_get_all_errata, _set_errata)
+    recent_errata = property(_get_recent_errata, _set_errata)

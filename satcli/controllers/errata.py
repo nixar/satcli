@@ -35,7 +35,49 @@ class ErrataController(SatCLIController):
                                advisory=self.cli_opts.advisory)
         return dict(errata=errata)
     
+    @expose('satcli.templates.errata.show', namespace='errata')
+    def create(self, *args, **kw):
+        errors = []
+        errata = []
+        if not self.cli_opts.advisory:
+            errors.append(('SatCLIArgumentError', 
+                           'errata -a/--advisory required.'))
+        abort_on_error(errors)
+        channels = g.proxy.query(model.Channel)
+        for c in channels:
+            errata.append(c.errata)
+        
+        print errata
+        return dict(errata=errata)
     
+    @expose('satcli.templates.errata.list', namespace='errata')
+    def list(self, *args, **kw):
+        errors = []
+        all_errata = [] # list of tuples, 0 is the errata data, 1 is the errata dict
+
+        if self.cli_opts.channel:
+            channels = []
+            labels = self.cli_opts.channel.split(',')
+            for label in labels:
+                channels.append(g.proxy.query(model.Channel, label=label, 
+                                just_one=True))
+        else:
+            channels = g.proxy.query(model.Channel)
+                           
+        abort_on_error(errors)
+        for c in channels:
+            if self.cli_opts.all:
+                errata = c.errata
+            else:
+                errata = c.recent_errata
+        
+        for e in errata:
+            all_errata.append((e.issue_date, e))
+        
+        all_errata.sort()
+        all_errata.reverse()
+        
+        return dict(errata=all_errata)
     
     # HELP COMMANDS
     

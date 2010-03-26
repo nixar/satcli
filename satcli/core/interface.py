@@ -1,5 +1,12 @@
 """Base interface class to setup CRUD operations."""
         
+def objectize(obj, dictionary):
+    """Set attributes of an object from a dictionary."""
+    o = obj()
+    for key in dictionary:
+        setattr(o, key, dictionary[key])
+    return o
+    
 class RHNSatelliteInterface(object):
     def __init__(self):
         pass
@@ -19,10 +26,3 @@ class RHNSatelliteInterface(object):
     def delete(self):
         raise SatCLIRuntimeError, \
             "RHNSatelliteInterface.delete must be subclassed"
-    
-    def _objectize(self, obj, dictionary):
-        """Set attributes of an object from a dictionary."""
-        o = obj()
-        for key in dictionary:
-            setattr(o, key, dictionary[key])
-        return o

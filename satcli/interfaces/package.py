@@ -9,7 +9,7 @@ from cement.core.log import get_logger
 
 from satcli import app_globals as g
 from satcli.core.exc import SatCLIArgumentError
-from satcli.core.interface import RHNSatelliteInterface
+from satcli.core.interface import RHNSatelliteInterface, objectize
 from satcli.model import root as model
 
 log = get_logger(__name__)
@@ -49,7 +49,7 @@ class PackageInterface(RHNSatelliteInterface):
                         details = g.proxy.call('packages.getDetails', 
                                                exact_pkg['id'])
                         exact_pkg.update(details)
-                    pkg_object = (self._objectize(model.Package, exact_pkg))
+                    pkg_object = (objectize(model.Package, exact_pkg))
                     return pkg_object
                 else:
                     raise SatCLIArgumentError, "More than one package found!"
@@ -62,14 +62,14 @@ class PackageInterface(RHNSatelliteInterface):
                     pkg = packages[0]
                     details = g.proxy.call('packages.getDetails', pkg['id'])
                     pkg.update(details)
-                pkg_object = (self._objectize(model.Package, pkg))
+                pkg_object = (objectize(model.Package, pkg))
                 return pkg_object
         else:        
             for package in packages:
                 if all_data:
                     details = g.proxy.call('packages.getDetails', package['id'])
                     package.update(details)
-                package_objects.append(self._objectize(model.Package, package))    
+                package_objects.append(objectize(model.Package, package))    
             return package_objects
             
     def create(self, package_obj):

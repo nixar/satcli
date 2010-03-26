@@ -9,7 +9,7 @@ from cement.core.log import get_logger
 
 from satcli import app_globals as g
 from satcli.core.exc import SatCLIArgumentError
-from satcli.core.interface import RHNSatelliteInterface
+from satcli.core.interface import RHNSatelliteInterface, objectize
 from satcli.model import root as model
 
 log = get_logger(__name__)
@@ -40,7 +40,7 @@ class ChannelInterface(RHNSatelliteInterface):
                     details = g.proxy.call('channel.software.getDetails', 
                                               channel['label'])
                     channel.update(details)
-                channel_objects.append(self._objectize(model.Channel, channel))
+                channel_objects.append(objectize(model.Channel, channel))
         
         if just_one:
             if len(channel_objects) > 1:
