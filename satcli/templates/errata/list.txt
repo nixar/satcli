@@ -1,0 +1,3 @@
+{% for d,e in errata %}\
+${"%-25s" % e.advisory_name} | ${"%-50s" % e.synopsis} | ${"%-10s" % e.issue_date} 
+{% end %}
