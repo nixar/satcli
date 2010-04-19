@@ -6,6 +6,8 @@ This controller handles interactions with the following API handlers:
 """
 
 import sys, os
+from pyrpm.rpm import RPM
+from pyrpm import rpmdefs
 from glob import glob
 from commands import getstatusoutput as gso
 
@@ -69,6 +71,7 @@ class ErrataController(SatCLIController):
         abort_on_error(errors)
 
         rpms = glob(str(self.cli_opts.rpms))
+        rpms_data = []
         for r in rpms:
             nosig_txt = ''
             if config['allow_nosig']:
@@ -77,6 +80,13 @@ class ErrataController(SatCLIController):
                 (config['cmd_rhnpush'], r, config['user'], config['password'], 
                  config['server'], nosig_txt)
             gso(cmd)
+            rpm = RPM(file(r))  
+            package = g.proxy.query(model.Package, just_one=True,
+                                name=rpm[rpmdefs.RPMTAG_NAME], 
+                                version=rpm[rpmdefs.RPMTAG_VERSION], 
+                                release=rpm[rpmdefs.RPMTAG_RELEASE], 
+                                arch=rpm[rpmdefs.RPMTAG_ARCH])
+            rpms_data.append(package)
         if self.cli_opts.srpm:
             if os.path.exists(self.cli_opts.srpm):
                 nosig_txt = ''
@@ -88,6 +98,7 @@ class ErrataController(SatCLIController):
                     gso(cmd)
                 else:
                     log.warn("SRPM '%s' doesn't exist!" % self.cli_opts.srpm)    
+                    
         return dict()
     
     @expose('satcli.templates.errata.list', namespace='errata')

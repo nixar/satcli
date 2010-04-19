@@ -24,7 +24,23 @@ class PackageInterface(RHNSatelliteInterface):
                                                  
     def query(self, regex=None, just_one=False, all_data=False, **filters):
         package_objects = []
-        if len(filters) > 0:
+        if just_one:
+            try:
+                assert filters.has_key('name'), "package name required."
+                assert filters.has_key('version'), "package version required."
+                assert filters.has_key('release'), "package release required."
+                assert filters.has_key('arch'), "package arch required."    
+            except AssertionError, e:
+                raise SatCLIArgumentError, e.args[0]
+            
+            packages = g.proxy.call('packages.findByNvrea',
+                                     filters['name'],
+                                     filters['version'],
+                                     filters['release'],
+                                     filters.get('epoch', ''),
+                                     filters['arch']
+                                    )
+        elif len(filters) > 0:
             lucene = ''
             for key in filters:
                 if not filters[key]:
@@ -57,9 +73,10 @@ class PackageInterface(RHNSatelliteInterface):
             elif len(packages) == 0:
                 raise SatCLIArgumentError, "No packages found matching that query!"
             else: 
+                pkg = packages[0]
+                
                 # only 1 exists
-                if all_data:
-                    pkg = packages[0]
+                if all_data:    
                     details = g.proxy.call('packages.getDetails', pkg['id'])
                     pkg.update(details)
                 pkg_object = (objectize(model.Package, pkg))
