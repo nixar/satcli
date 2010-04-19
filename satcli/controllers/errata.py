@@ -160,6 +160,7 @@ class ErrataController(SatCLIController):
             rpms_data.append(package)
         if self.cli_opts.srpm:
             if os.path.exists(self.cli_opts.srpm):
+                rpm = RPM(file(r))  
                 nosig_txt = ''
                 if config['allow_nosig']:
                     nosig_txt = '--nosig'
@@ -170,7 +171,7 @@ class ErrataController(SatCLIController):
                     gso(cmd)
                 else:
                     log.warn("SRPM '%s' doesn't exist!" % self.cli_opts.srpm)    
-        
+
         for p in rpms_data:
             package_ids.append(p.id)
         
@@ -180,6 +181,7 @@ class ErrataController(SatCLIController):
             self.cli_opts.advisory_type = 'Product Enhancement Advisory'
         elif self.cli_opts.advisory_type == 'security':
             self.cli_opts.advisory_type = 'Security Advisory'        
+            
             
         e = model.Errata()
         e.synopsis = self.cli_opts.synopsis
