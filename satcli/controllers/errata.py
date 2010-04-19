@@ -5,12 +5,15 @@ This controller handles interactions with the following API handlers:
     
 """
 
-import sys
+import sys, os
+from glob import glob
+from commands import getstatusoutput as gso
 
 from cement.core.exc import CementArgumentError
 from cement.core.log import get_logger
 from cement.core.controller import CementController, expose
 from cement.core.hook import run_hooks
+from cement.core.namespace import get_config
 from rosendale.helpers.error import abort_on_error
 
 from satcli import app_globals as g
@@ -19,6 +22,7 @@ from satcli.model import root as model
 from satcli.core.controller import SatCLIController
 
 log = get_logger(__name__)
+config = get_config()
 
 class ErrataController(SatCLIController):  
     @expose('satcli.templates.errata.show', namespace='errata')
@@ -35,20 +39,56 @@ class ErrataController(SatCLIController):
                                advisory=self.cli_opts.advisory)
         return dict(errata=errata)
     
-    @expose('satcli.templates.errata.show', namespace='errata')
+    @expose(namespace='errata')
     def create(self, *args, **kw):
         errors = []
-        errata = []
+        channels = []
         if not self.cli_opts.advisory:
             errors.append(('SatCLIArgumentError', 
                            'errata -a/--advisory required.'))
-        abort_on_error(errors)
-        channels = g.proxy.query(model.Channel)
-        for c in channels:
-            errata.append(c.errata)
+        if not self.cli_opts.rpms:
+            errors.append(('SatCLIArgumentError', 
+                           'errata --rpms required.'))                   
+        if not self.cli_opts.channel and not self.cli_opts.channels_file:
+            errors.append(('SatCLIArgumentError', 
+                           'errata -c/--channel or --channels-file required.'))                   
+        if self.cli_opts.channel:
+            _channels = self.cli_opts.channel.split(',')
+            for _c in _channels:
+                channels.append(_c)
+        if self.cli_opts.channels_file:
+            if os.path.exists(self.cli_opts.channels_file):
+                f = open(self.cli_opts.channels_file, 'r')
+                for line in f.readlines():
+                    channels.append(line.strip('\n'))
+            else:
+                log.warn("channels file '%s' doesn't exist!" % \
+                         self.cli_opts.channels_file)
+            
         
-        print errata
-        return dict(errata=errata)
+        abort_on_error(errors)
+
+        rpms = glob(str(self.cli_opts.rpms))
+        for r in rpms:
+            nosig_txt = ''
+            if config['allow_nosig']:
+                nosig_txt = '--nosig'
+            cmd = "%s %s -u %s -p %s --server %s %s" % \
+                (config['cmd_rhnpush'], r, config['user'], config['password'], 
+                 config['server'], nosig_txt)
+            gso(cmd)
+        if self.cli_opts.srpm:
+            if os.path.exists(self.cli_opts.srpm):
+                nosig_txt = ''
+                if config['allow_nosig']:
+                    nosig_txt = '--nosig'
+                    cmd = "%s %s --source -u %s -p %s --server %s %s" % \
+                        (config['cmd_rhnpush'], self.cli_opts.srpm, config['user'], 
+                         config['password'], config['server'], nosig_txt)
+                    gso(cmd)
+                else:
+                    log.warn("SRPM '%s' doesn't exist!" % self.cli_opts.srpm)    
+        return dict()
     
     @expose('satcli.templates.errata.list', namespace='errata')
     def list(self, *args, **kw):
@@ -70,10 +110,9 @@ class ErrataController(SatCLIController):
                 errata = c.errata
             else:
                 errata = c.recent_errata
-        
-        for e in errata:
-            all_errata.append((e.issue_date, e))
-        
+            for e in errata:
+                all_errata.append((e.issue_date, e))
+
         all_errata.sort()
         all_errata.reverse()
         

@@ -11,7 +11,7 @@ channel.options.add_option('-t', '--chan-type', action='store', dest='type',
     default=None, help='channel type [all, mine, popular...]')
 channel.options.add_option('--count', action='store', dest='popularity_count', 
     default=None, help='popularity count (number of servers)')
-channel.options.add_option('-l', '--chan-label', action='store',
+channel.options.add_option('-c', '--channel', action='store',
     dest='label', default=None, help='channel label')
 channel.options.add_option('--chan-id', action='store', dest='id',
     default=None, help='channel id')
