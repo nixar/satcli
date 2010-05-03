@@ -28,6 +28,18 @@ def options_hook(*args, **kwargs):
         default=None, help="query string [regular expression]")    
     root_options.add_option('-q', '--query', action='store', dest='query',
         default=None, help="query string [plain]")
+    root_options.add_option('--lock-file', action='store', dest='lockfile',
+        default=None, help="lock file path", metavar="PATH")    
+    root_options.add_option('--user', action ='store', 
+        dest='user', default=None, help='RHN user name') 
+    root_options.add_option('--pass', action='store', 
+        dest='password', default=None, help='RHN user password') 
+    root_options.add_option('--server', action ='store', 
+        dest='server', default=None, help='RHN server hostname') 
+    root_options.add_option('--port', action ='store', 
+        dest='port', default=None, help='RHN server port')    
+    root_options.add_option('--force', action ='store_true', 
+        dest='force', default=None, help='force the action')    
     return ('root', root_options)
 
 @register_hook()
@@ -36,32 +48,14 @@ def validate_config_hook(*args, **kwargs):
     if not config:
         print("WARNING: broken hook.  missing 'config' keyword argument.")
     else:
-        required_settings = ['user', 'password', 'server', 'port', 'use_ssl']
+        required_settings = [
+            'user', 'password', 'server', 'port', 'use_ssl', 'lockfile'
+            ]
         for s in required_settings:
             if not config.has_key(s):
                 raise CementConfigError, "config['%s'] value missing!" % s
             
-@register_hook()
-def options_hook(*args, **kwargs):
-    """
-    Pass back an OptParse object, options will be merged into the global
-    options.
-    """
-    global_options = init_parser()
-    global_options.add_option('--user', action ='store', 
-        dest='user', default=None, help='RHN user name'
-        ) 
-    global_options.add_option('--pass', action='store', 
-        dest='password', default=None, help='RHN user password'
-        ) 
-    global_options.add_option('--server', action ='store', 
-        dest='server', default=None, help='RHN server hostname'
-        ) 
-    global_options.add_option('--port', action ='store', 
-        dest='port', default=None, help='RHN server port'
-        )    
-    return ('root', global_options)
     
 # Import all additional (non-plugin) bootstrap libraries here    
 
-from satcli.bootstrap import channel, package, errata
+from satcli.bootstrap import channel, package, errata, mirror

@@ -5,6 +5,7 @@ main() function of this file.
 
 """
 
+import os
 import sys
 import xmlrpclib
 from pkg_resources import get_distribution
@@ -15,6 +16,8 @@ from cement.core.log import get_logger
 from cement.core.app_setup import lay_cement
 from cement.core.configuration import ensure_api_compat
 from cement.core.command import run_command
+from cement.core.namespace import get_config
+from rosendale.helpers.misc import get_timestamp
 
 from satcli.core.config import default_config
 from satcli.core.exc import SatCLIArgumentError, SatCLIConfigError, \
@@ -45,7 +48,18 @@ def main():
 
         if not len(sys.argv) > 1:
             sys.argv.append('default')
+
+        config = get_config()
         
+        # create the lock file
+        if os.path.exists(config['lockfile']):
+            raise SatCLIRuntimeError, \
+                "lock file exists, is satcli already running?"
+        else:
+            f = open(config['lockfile'], 'w+')
+            f.write(get_timestamp())
+            f.close()
+
         run_command(sys.argv[1])
             
     except CementArgumentError, e:
@@ -68,6 +82,10 @@ def main():
         sys.exit(e.code)
     except xmlrpclib.Fault, e:
         print("xmlrpclib.Fault > %s" % e)
+    finally:
+        config = get_config()
+        if os.path.exists(config['lockfile']):
+            os.remove(config['lockfile'])
     sys.exit(0)
         
 if __name__ == '__main__':

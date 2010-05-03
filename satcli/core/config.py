@@ -31,7 +31,7 @@ dcf['log_file'] = '%s/log/%s.log' % (prefix, dcf['app_name'])
 dcf['plugin_config_dir'] = '%s/etc/plugins.d' % prefix
 dcf['log_to_console'] = True
 dcf['output_engine'] = 'genshi'
-
+dcf['lockfile'] = os.path.join(dcf['datadir'], 'satcli.lock')
 dcf['user'] = ''
 dcf['password'] = ''
 dcf['server'] = 'rhn.example.com'
