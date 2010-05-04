@@ -1,0 +1,5 @@
+
+This command is a wrapper around 'rhnpush'.  It enables you to easily push
+an entire directory of RPMS (or SRPMS) to a channel.
+
+    $ satcli channel push --channel my-custom-channel --rpms "/path/to/*.rpm"

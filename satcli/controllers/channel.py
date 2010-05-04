@@ -226,3 +226,7 @@ class ChannelController(SatCLIController):
     @expose('satcli.templates.channel.search-help', namespace='channel')
     def search_help(self, *args, **kw):
         return dict()
+    
+    @expose('satcli.templates.channel.push-help', namespace='channel')
+    def push_help(self, *args, **kw):
+        return dict()
