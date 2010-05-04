@@ -175,17 +175,12 @@ class ChannelController(SatCLIController):
     def push(self, *args, **kw):
         config = get_config()
         if not self.cli_opts.label:
-            if len(sys.argv) >= 4:
-                self.cli_opts.label = sys.argv[3]
-            else:
-                raise SatCLIArgumentError, 'channel -l/--label required'
+            raise SatCLIArgumentError, 'channel -l/--label required'
         
         channels = self.cli_opts.label.split(',')
         for channel in channels:
             if self.cli_opts.rpms:        
                 rpms = glob(str(self.cli_opts.rpms))
-                rpms_data = []
-                package_ids = []
                 for rpm in rpms:
                     nosig_txt = ''
                     if config['allow_nosig']:
@@ -194,14 +189,9 @@ class ChannelController(SatCLIController):
                         (config['cmd_rhnpush'], rpm, config['user'], 
                          config['password'], config['server'], 
                          channel, nosig_txt)
-                    gso(cmd)
-                    rpm_meta = RPM(file(rpm))  
-                    package = g.proxy.query(model.Package, just_one=True,
-                                        name=rpm_meta[rpmdefs.RPMTAG_NAME], 
-                                        version=rpm_meta[rpmdefs.RPMTAG_VERSION], 
-                                        release=rpm_meta[rpmdefs.RPMTAG_RELEASE], 
-                                        arch=rpm_meta[rpmdefs.RPMTAG_ARCH])
-                    rpms_data.append(package)
+                    res = gso(cmd)
+                    if res[0] != 0:
+                        log.warn(res[1])
                     
         if self.cli_opts.srpms:
             srpms = glob(str(self.cli_opts.srpms))
@@ -214,7 +204,9 @@ class ChannelController(SatCLIController):
                         (config['cmd_rhnpush'], srpm, 
                          config['user'], config['password'], 
                          config['server'], nosig_txt)
-                    gso(cmd)
+                    res = gso(cmd)
+                        if res[0] != 0:
+                            log.warn(res[1])
                 else:
                     log.warn("SRPM '%s' doesn't exist!" % srpm)          
 

@@ -79,10 +79,12 @@ class LocalRepo(object):
                 self._fast_sync(p, force)
         
         # finally, create the repo
-        if self.modified and self.run_createrepo:
+        res = os.path.exists(os.path.join(self.local_dir, 'repodata'))
+        if (self.modified or not res) and self.run_createrepo:
             log.info("running createrepo: %s" % self.label)
             os.system("%s %s" % (self.config['cmd_createrepo'], self.local_dir))
-        if self.modified and self.run_yumarch:
+        res = os.path.exists(os.path.join(self.local_dir, 'headers'))    
+        if (self.modified or not res) and self.run_yumarch:
             log.info("running yum-arch: %s" % self.label)
             os.system("%s %s" % (self.config['cmd_yumarch'], self.local_dir))
             

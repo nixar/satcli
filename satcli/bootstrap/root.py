@@ -58,4 +58,4 @@ def validate_config_hook(*args, **kwargs):
     
 # Import all additional (non-plugin) bootstrap libraries here    
 
-from satcli.bootstrap import channel, package, errata, mirror
+from satcli.bootstrap import channel, package, errata
