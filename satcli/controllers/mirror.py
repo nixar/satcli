@@ -77,6 +77,20 @@ class LocalRepo(object):
             else:
                 self._fast_sync(p, force)
         
+        # finally, create the repo
+        if self.modified and self.run_createrepo:
+            log.info("running createrepo: %s" % self.label)
+            os.system("%s %s" % (self.config['createrepo_path'], self.local_dir))
+        if self.modified and self.run_yumarch:
+            log.info("running yum-arch: %s" % self.label)
+            os.system("%s %s" % (self.config['yumarch_path'], self.local_dir))
+            
+        # clean up files that aren't in packages
+        for file in os.listdir(self.local_dir):
+            if file not in self.synced_files and file.endswith('.rpm'):
+                log.debug("cleanup: %s" % file)
+                os.remove(os.path.join(self.local_dir, file))
+                
     def fetch_package(self, package, local_path):
         # FIX ME:
         # need to do an md5 sum here, but the cost sucks because you have to
@@ -114,7 +128,7 @@ class MirrorController(SatCLIController):
                     os.remove(last_path)
             raise SatCLIRuntimeError, "Caught KeyboardInterrupt"
             
-        log.info("mirroring of '%s' complete." % chan.label)
+        log.info("mirroring of '%s' complete." % repo.label)
         
     @expose(namespace='mirror')
     def sync(self, *args, **kw): 
