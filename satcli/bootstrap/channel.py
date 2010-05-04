@@ -43,5 +43,9 @@ channel.options.add_option('--chan-eol', action='store', dest='end_of_life',
 channel.options.add_option('--chan-parent', action='store', 
     dest='parent_channel_label', default=None, help="channel parent label",
     metavar='LABEL')
+channel.options.add_option('--rpms', action='store', dest='rpms', 
+    default=None, help="rpm(s) path (i.e '/path/to/*.rpm') [quoted]", metavar="PATH")    
+channel.options.add_option('--srpms', action='store', dest='srpms', 
+    default=None, help='source rpms path (i.e /path/to/*.srpm)', metavar="PATH")    
 # Officialize and register the namespace
 register_namespace(channel)

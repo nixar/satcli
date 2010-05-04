@@ -8,13 +8,18 @@ This controller handles interactions with the following API handlers:
     
 """
 
+import os
 import sys
+from glob import glob
+from pyrpm.rpm import RPM
+from pyrpm import rpmdefs
 from commands import getstatusoutput as gso
 
 from cement.core.exc import CementArgumentError
 from cement.core.log import get_logger
 from cement.core.controller import CementController, expose
 from cement.core.hook import run_hooks
+from cement.core.namespace import get_config
 from rosendale.helpers.error import abort_on_error
 
 from satcli import app_globals as g
@@ -168,44 +173,50 @@ class ChannelController(SatCLIController):
 
     @expose(namespace='channel')
     def push(self, *args, **kw):
+        config = get_config()
         if not self.cli_opts.label:
             if len(sys.argv) >= 4:
                 self.cli_opts.label = sys.argv[3]
             else:
                 raise SatCLIArgumentError, 'channel -l/--label required'
-                
-        rpms = glob(str(self.cli_opts.rpms))
-        rpms_data = []
-        package_ids = []
-        for r in rpms:
-            nosig_txt = ''
-            if config['allow_nosig']:
-                nosig_txt = '--nosig'
-            cmd = "%s %s -u %s -p %s --server %s %s" % \
-                (config['cmd_rhnpush'], r, config['user'], 
-                 config['password'], 
-                 config['server'], nosig_txt)
-            gso(cmd)
-            rpm = RPM(file(r))  
-            package = g.proxy.query(model.Package, just_one=True,
-                                name=rpm[rpmdefs.RPMTAG_NAME], 
-                                version=rpm[rpmdefs.RPMTAG_VERSION], 
-                                release=rpm[rpmdefs.RPMTAG_RELEASE], 
-                                arch=rpm[rpmdefs.RPMTAG_ARCH])
-            rpms_data.append(package)
-        if self.cli_opts.srpm:
-            if os.path.exists(self.cli_opts.srpm):
-                rpm = RPM(file(r))  
-                nosig_txt = ''
-                if config['allow_nosig']:
-                    nosig_txt = '--nosig'
+        
+        channels = self.cli_opts.label.split(',')
+        for channel in channels:
+            if self.cli_opts.rpms:        
+                rpms = glob(str(self.cli_opts.rpms))
+                rpms_data = []
+                package_ids = []
+                for rpm in rpms:
+                    nosig_txt = ''
+                    if config['allow_nosig']:
+                        nosig_txt = '--nosig'
+                    cmd = "%s %s -u %s -p %s --server %s -c %s %s" % \
+                        (config['cmd_rhnpush'], rpm, config['user'], 
+                         config['password'], config['server'], 
+                         channel, nosig_txt)
+                    gso(cmd)
+                    rpm_meta = RPM(file(rpm))  
+                    package = g.proxy.query(model.Package, just_one=True,
+                                        name=rpm_meta[rpmdefs.RPMTAG_NAME], 
+                                        version=rpm_meta[rpmdefs.RPMTAG_VERSION], 
+                                        release=rpm_meta[rpmdefs.RPMTAG_RELEASE], 
+                                        arch=rpm_meta[rpmdefs.RPMTAG_ARCH])
+                    rpms_data.append(package)
+                    
+        if self.cli_opts.srpms:
+            srpms = glob(str(self.cli_opts.srpms))
+            for srpm in srpms:
+                if os.path.exists(srpm):
+                    nosig_txt = ''
+                    if config['allow_nosig']:
+                        nosig_txt = '--nosig'
                     cmd = "%s %s --source -u %s -p %s --server %s %s" % \
-                        (config['cmd_rhnpush'], self.cli_opts.srpm, 
+                        (config['cmd_rhnpush'], srpm, 
                          config['user'], config['password'], 
                          config['server'], nosig_txt)
                     gso(cmd)
                 else:
-                    log.warn("SRPM '%s' doesn't exist!" % self.cli_opts.srpm)          
+                    log.warn("SRPM '%s' doesn't exist!" % srpm)          
 
     # Help Commands
     @expose('satcli.templates.channel.list-help', namespace='channel')

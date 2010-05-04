@@ -160,17 +160,17 @@ class ErrataController(SatCLIController):
             rpms_data.append(package)
         if self.cli_opts.srpm:
             if os.path.exists(self.cli_opts.srpm):
-                rpm = RPM(file(r))  
+                rpm = RPM(file(self.cli_opts.srpm))  
                 nosig_txt = ''
                 if config['allow_nosig']:
                     nosig_txt = '--nosig'
-                    cmd = "%s %s --source -u %s -p %s --server %s %s" % \
-                        (config['cmd_rhnpush'], self.cli_opts.srpm, 
-                         config['user'], config['password'], 
-                         config['server'], nosig_txt)
-                    gso(cmd)
-                else:
-                    log.warn("SRPM '%s' doesn't exist!" % self.cli_opts.srpm)    
+                cmd = "%s %s --source -u %s -p %s --server %s %s" % \
+                    (config['cmd_rhnpush'], self.cli_opts.srpm, 
+                     config['user'], config['password'], 
+                     config['server'], nosig_txt)
+                gso(cmd)
+            else:
+                log.warn("SRPM '%s' doesn't exist!" % self.cli_opts.srpm)    
 
         for p in rpms_data:
             package_ids.append(p.id)

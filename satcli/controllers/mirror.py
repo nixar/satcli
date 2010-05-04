@@ -81,10 +81,10 @@ class LocalRepo(object):
         # finally, create the repo
         if self.modified and self.run_createrepo:
             log.info("running createrepo: %s" % self.label)
-            os.system("%s %s" % (self.config['createrepo_path'], self.local_dir))
+            os.system("%s %s" % (self.config['cmd_createrepo'], self.local_dir))
         if self.modified and self.run_yumarch:
             log.info("running yum-arch: %s" % self.label)
-            os.system("%s %s" % (self.config['yumarch_path'], self.local_dir))
+            os.system("%s %s" % (self.config['cmd_yumarch'], self.local_dir))
             
         # clean up files that aren't in packages
         for file in os.listdir(self.local_dir):
