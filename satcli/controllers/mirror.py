@@ -70,6 +70,7 @@ class LocalRepo(object):
         self.synced_files.append(file) 
         
     def sync(self, verify=False, force=False):
+        log.info('syncing rhn://%s ...' % self.label)
         for p in self.packages:
             if verify:
                 # self._slow_sync(p)
@@ -90,12 +91,13 @@ class LocalRepo(object):
             if file not in self.synced_files and file.endswith('.rpm'):
                 log.debug("cleanup: %s" % file)
                 os.remove(os.path.join(self.local_dir, file))
-                
+        log.info('sync complete.')        
+        
     def fetch_package(self, package, local_path):
         # FIX ME:
         # need to do an md5 sum here, but the cost sucks because you have to
         # make a call for each package to get its md5 sum
-        log.info("fetching %s/%s-%s-%s.%s.rpm ...." % (self.channel.label, 
+        log.debug("fetching %s/%s-%s-%s.%s.rpm ...." % (self.channel.label, 
                                                        package['name'],
                                                        package['version'],
                                                        package['release'],
@@ -108,11 +110,9 @@ class LocalRepo(object):
             
     
 class MirrorController(SatCLIController):  
-    def mirror(self, channel):
+    def _mirror_channel(self, channel):
         config = get_config('mirror')
         repo = LocalRepo(channel)
-        
-        #print repo.packages
         
         try:
             repo.sync(verify=self.cli_opts.verify, force=self.cli_opts.force)
@@ -127,8 +127,6 @@ class MirrorController(SatCLIController):
                               % last_path)
                     os.remove(last_path)
             raise SatCLIRuntimeError, "Caught KeyboardInterrupt"
-            
-        log.info("mirroring of '%s' complete." % repo.label)
         
     @expose(namespace='mirror')
     def sync(self, *args, **kw): 
@@ -139,10 +137,10 @@ class MirrorController(SatCLIController):
     
         if self.cli_opts.channel == 'all':
             for c in config.sections:
-                self.mirror(c)
+                self._mirror_channel(c)
         else:
             if self.cli_opts.channel in config.sections:
-                self.mirror(self.cli_opts.channel)
+                self._mirror_channel(self.cli_opts.channel)
             else:
                 raise SatCLIArgumentError, \
                     "channel '%s' doesn't exist in the config." % \
