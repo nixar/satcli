@@ -1,6 +1,7 @@
 
 import os
 
+from cement.core.opt import init_parser
 from cement.core.hook import register_hook
 from cement.core.namespace import CementNamespace, register_namespace, \
                                   get_config
@@ -19,7 +20,7 @@ mirror.options.add_option('-V', '--verify', action='store_true',
 mirror.options.add_option('--channel', action='store',
     dest='channel', default=None, help='channel to sync/mirror')    
 register_namespace(mirror)
-
+    
 @register_hook()
 def validate_config_hook(*args, **kwargs):
     config = get_config('mirror')

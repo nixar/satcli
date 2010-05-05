@@ -205,11 +205,16 @@ class ChannelController(SatCLIController):
                          config['user'], config['password'], 
                          config['server'], nosig_txt)
                     res = gso(cmd)
-                        if res[0] != 0:
-                            log.warn(res[1])
+                    if res[0] != 0:
+                        log.warn(res[1])
                 else:
                     log.warn("SRPM '%s' doesn't exist!" % srpm)          
 
+    @expose()
+    def test(*args, **kw):
+        c = get_config()
+        print c['mirror']
+    
     # Help Commands
     @expose('satcli.templates.channel.list-help', namespace='channel')
     def list_help(self, *args, **kw):
