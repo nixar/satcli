@@ -5,6 +5,7 @@ to expose commands to the root namespace which will be accessible under:
     $ satcli --help
   
 """
+import xmlrpclib
 
 from cement import namespaces
 from cement.core.exc import CementArgumentError
